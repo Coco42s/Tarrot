@@ -3,48 +3,10 @@ import threading
 import json
 import pickle
 import time
+from Class.Client import *
 
 
-class Client:
-    def __init__(self, socket:socket.socket, address):
-        self.socket = socket
-        self.address = address
-        self.username = None
-    
-    def send_message(self, message):
-        try:
-            msg = pickle.dumps({'afficher': True, 'data': message})
-            self.socket.sendall(msg)
-        except socket.error as e:
-            print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
 
-    def send_data(self, data):
-        try:
-            msg = pickle.dumps({'afficher': True, 'data': data})
-            self.socket.sendall(msg)
-        except socket.error as e:
-            print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
-    
-    def receive_message(self):
-        return self.socket.recv(1024).decode()
-
-def handle_client(client:Client):
-    while True:
-        try:
-            message = client.receive_message()
-            if not message:
-                break
-
-            # Traitement du message
-            broadcast_message(f"{client.username}: {message}")
-        except Exception as e:
-            print(f"Erreur de traitement pour {client.address}: {str(e)}")
-            break
-
-    # Si le client se déconnecte, le retirer de la liste
-    clients.remove(client)
-    broadcast_message(f"{client.username} s'est déconnecté.")
-    client.socket.close()
 
 def broadcast_message(message):
     for client in clients:
@@ -81,6 +43,44 @@ def accept_connections():
         # Démarrer un thread pour gérer le client
         client_thread = threading.Thread(target=handle_client, args=(client,))
         client_thread.start()
+
+def runGame():
+    print("boubou")
+
+def handle_client(client:Client):
+    p=[]
+    while True:
+        try:
+            message = client.receive_message()
+            
+            if not message:
+                break
+            
+            if str(message) == "pret":
+                broadcast_message(f"{client.username}: {message}")
+                client.send_data({"pret":True})
+                p.append(client)
+            
+            
+            if len(p)==2:
+                print("aa")
+                return
+            
+                 
+        except Exception as e:
+            print(f"Erreur de traitement pour {client.address}: {str(e)}")
+            break
+    
+        
+    
+    # Si le client se déconnecte, le retirer de la liste
+    clients.remove(client)
+    broadcast_message(f"{client.username} s'est déconnecté.")
+    client.socket.close()
+
+
+
+
 
 if __name__ == "__main__":
     # Configuration du serveur

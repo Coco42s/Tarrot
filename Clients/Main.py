@@ -12,6 +12,9 @@ import threading
 import json
 import pickle
 
+#--------Fonction--------#
+
+#Serveur
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def connection():
@@ -47,10 +50,20 @@ def receive_messages(socket):
                 textbox.configure(state="normal")
                 textbox.insert(END, f"{message['data']}\n")
                 textbox.configure(state="disable")
+            else:
+                try:
+                    if message['data']['pret'] == True:
+                        tab_mune_option_Jeux_btPret.configure(state="disabled", command=None)
+                except:
+                    pass
         except socket.error as e:
             print(f"Erreur lors de la réception du message: {str(e)}")
 
 
+
+
+
+#jestion bouton
         
 def on_button_click_carte(button_text):
     for i in range(len(a)):
@@ -65,7 +78,11 @@ def on_button_click_carte(button_text):
     socket.sendall(data)
 
 
-
+def on_button_click(button_text):
+    
+    data = str(button_text)
+    data = data.encode("utf8")
+    socket.sendall(data)
 
 
 
@@ -142,6 +159,8 @@ def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a
     return a,b
 
 
+
+
 def change_appearance_mode_event(new_appearance_mode: str):
     set_appearance_mode(new_appearance_mode)
 
@@ -207,6 +226,7 @@ tab_mune_option.grid(row=1, column=12, padx=(20, 20), pady=(20, 20), sticky="nse
 tab_mune_option.add("Jeux")
 tab_mune_option.add("Option ")
 
+global tab_mune_option_Jeux_btPret
 tab_mune_option_Jeux_btPret = CTkButton(tab_mune_option.tab("Jeux"), text="Prêt", command=lambda t="pret": on_button_click(t))
 tab_mune_option_Jeux_btPret.grid(row=0, column=0, padx=50, pady=(10, 10))
 
