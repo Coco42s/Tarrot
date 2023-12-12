@@ -238,7 +238,7 @@ carte = CTkFrame(fenetre, width=250)
 carte.grid(row=1, column=1, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
 a = carte_wid()
-a[0].configure(state="disable",command=None)
+#a[0].configure(state="disable",command=None)
 
 tab_mune_option = CTkTabview(fenetre, width=250)
 tab_mune_option.grid(row=1, column=12, padx=(20, 20), pady=(20, 20), sticky="nsew")
