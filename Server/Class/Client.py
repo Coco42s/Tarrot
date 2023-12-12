@@ -25,5 +25,12 @@ class Client:
         except socket.error as e:
             print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
     
+    def libéré_carte(self):
+        pass
+    
+    def bloced_carte(self):
+        pass
+    
     def receive_message(self):
         return self.socket.recv(1024).decode()
+    

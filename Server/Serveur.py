@@ -6,7 +6,21 @@ import time
 from Class.Client import *
 
 
-
+def handle_client(client:Client):
+    while True:
+        try:
+            message = client.receive_message()
+            
+            if not message:
+                break
+                 
+        except Exception as e:
+            print(f"Erreur de traitement pour {client.address}: {str(e)}")
+            break
+    # Si le client se déconnecte, le retirer de la liste
+    clients.remove(client)
+    broadcast_message(f"{client.username} s'est déconnecté.")
+    client.socket.close()
 
 def broadcast_message(message):
     for client in clients:
@@ -41,42 +55,12 @@ def accept_connections():
         broadcast_message(f"{username} s'est connecté.")
 
         # Démarrer un thread pour gérer le client
-        client_thread = threading.Thread(target=handle_client, args=(client,))
-        client_thread.start()
+        #client_thread = threading.Thread(target=handle_client, args=(client,))
+        #client_thread.start()
 
-def runGame():
-    print("boubou")
 
-def handle_client(client:Client):
-    p=[]
-    while True:
-        try:
-            message = client.receive_message()
-            
-            if not message:
-                break
-            
-            if str(message) == "pret":
-                broadcast_message(f"{client.username}: {message}")
-                client.send_data({"pret":True})
-                p.append(client)
-            
-            
-            if len(p)==2:
-                print("aa")
-                return
-            
-                 
-        except Exception as e:
-            print(f"Erreur de traitement pour {client.address}: {str(e)}")
-            break
-    
-        
-    
-    # Si le client se déconnecte, le retirer de la liste
-    clients.remove(client)
-    broadcast_message(f"{client.username} s'est déconnecté.")
-    client.socket.close()
+
+
 
 
 
@@ -96,6 +80,8 @@ if __name__ == "__main__":
 
     # Liste des clients connectés
     clients = []
+    enAttente = []
+    partie = 0
 
     # Thread pour accepter les connexions
     accept_thread = threading.Thread(target=accept_connections)
