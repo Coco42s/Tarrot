@@ -22,6 +22,8 @@ def handle_client(client:Client):
     broadcast_message(f"{client.username} s'est déconnecté.")
     client.socket.close()
 
+
+
 def broadcast_message(message):
     for client in clients:
         try:
@@ -59,12 +61,21 @@ def accept_connections():
         #client_thread.start()
 
 
+#---Partie Vérif
+
+def verifPartie():
+    while True:
+        if len(partie3) == 3:
+            pass
+        if len(partie4) == 4:
+            pass
+        if len(partie4) == 5:
+            pass
+        
+        time.sleep(1)
 
 
-
-
-
-
+#---Main
 
 if __name__ == "__main__":
     # Configuration du serveur
@@ -81,7 +92,10 @@ if __name__ == "__main__":
     # Liste des clients connectés
     clients = []
     enAttente = []
-    partie = 0
+    
+    partie3 = []
+    partie4 = []
+    partie5 = []
 
     # Thread pour accepter les connexions
     accept_thread = threading.Thread(target=accept_connections)

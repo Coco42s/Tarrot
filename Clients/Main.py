@@ -45,15 +45,16 @@ def receive_messages(socket):
         try:
             data = socket.recv(1024)
             message = pickle.loads(data)
-            if message['afficher'] == True:
-                print(message['data'])
-                textbox.configure(state="normal")
-                textbox.insert(END, f"{message['data']}\n")
-                textbox.configure(state="disable")
-            else:
+            try:
+                if message['afficher'] == True:
+                    print(message['data'])
+                    textbox_jeu.configure(state="normal")
+                    textbox_jeu.insert(END, f"{message['data']}\n")
+                    textbox_jeu.configure(state="disable")
+            except:
                 try:
-                    if message['data']['pret'] == True:
-                        tab_mune_option_Jeux_btPret.configure(state="disabled", command=None)
+                    if message['serveur']:
+                        pass
                 except:
                     pass
         except socket.error as e:
@@ -200,17 +201,19 @@ side_bar()
 
 
 # create textbox
-textbox = CTkTextbox(fenetre, width=250, state="disable")
-textbox.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+textbox_jeu = CTkTextbox(fenetre, width=250, state="disable")
+textbox_jeu.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
 # create tabview
 tabview = CTkTabview(fenetre, width=250)
 tabview.grid(row=0, column=12, padx=(20, 20), pady=(20, 0), sticky="nsew")
-tabview.add("Coeur")
-tabview.add("Pique ")
-tabview.add("Carreau")
-tabview.add("Trefle ")
+tabview.add("Tchat")
+tabview.add("Serveur")
 
+textbox_serv = CTkTextbox(tabview.tab("Serveur"),height=150, state="disable")
+textbox_serv.grid(row=0, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
+entry_serv = CTkEntry(tabview.tab("Serveur"))
+entry_serv.grid(row=2, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
 
 
 #créé les boutons
