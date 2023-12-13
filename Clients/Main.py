@@ -101,9 +101,11 @@ def on_button_click_carte(button_text):
 
 
 def on_button_click(button_text):
-    data = str(button_text)
+    print(carte.winfo_height())
+    print(carte.winfo_width())
+    """data = str(button_text)
     data = data.encode("utf8")
-    socket.sendall(data)
+    socket.sendall(data)"""
 
 #Widgets
 
@@ -241,7 +243,7 @@ entry_tchat.bind('<Return>', send_entry_tchat)
 
 
 #créé les boutons
-carte = CTkFrame(fenetre, width=250)
+carte = CTkFrame(fenetre, width=788, height=416)
 carte.grid(row=1, column=1, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
 global a,b
