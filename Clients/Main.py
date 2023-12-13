@@ -47,40 +47,41 @@ def receive_messages(socket):
             message = pickle.loads(data)
             try:
                 if message['afficher'] == True:
-                    print(message['data'])
                     textbox_jeu.configure(state="normal")
                     textbox_jeu.insert(END, f"{message['data']}\n")
                     textbox_jeu.configure(state="disable")
             except:
                 try:
                     if message['serv']:
-                        print(message['serv'])
                         textbox_serv.configure(state="normal")
                         textbox_serv.insert(END, f"{message['serv']}\n")
                         textbox_serv.configure(state="disable")
+                        textbox_serv.see(END)
                 except:
                     try:
                         if message['tchat']:
-                            print(message['tchat'])
                             textbox_tchat.configure(state="normal")
                             textbox_tchat.insert(END, f"{message['tchat']}\n")
                             textbox_tchat.configure(state="disable")
+                            textbox_tchat.see(END)
                     except:
                         pass
         except socket.error as e:
             print(f"Erreur lors de la réception du message: {str(e)}")
 
 
-def send_entry_serv():
+
+def send_entry_serv(event):
+    data = entry_serv.get()
+    msg = pickle.dumps({'serv':data})
+    socket.sendall(msg)
+    entry_serv.delete(0, 'end')
+
+def send_entry_tchat(event):
     data = str(entry_tchat.get())
     msg = pickle.dumps({'tchat':data})
     socket.sendall(msg)
-
-def send_entry_tchat():
-    data = str(entry_tchat.get())
-    msg = pickle.dumps({'tchat':data})
-    socket.sendall(msg)
-
+    entry_tchat.delete(0, 'end')
 
 
 
@@ -226,13 +227,13 @@ tabview.grid(row=0, column=12, padx=(20, 20), pady=(20, 0), sticky="nsew")
 tabview.add("Tchat")
 tabview.add("Serveur")
 
-textbox_serv = CTkTextbox(tabview.tab("Serveur"),height=130, state="disable")
+textbox_serv = CTkTextbox(tabview.tab("Serveur"), height=130, wrap='word', activate_scrollbars=False, state="disable")
 textbox_serv.grid(row=0, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
 entry_serv = CTkEntry(tabview.tab("Serveur"))
 entry_serv.grid(row=2, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
 entry_serv.bind('<Return>', send_entry_serv)
 
-textbox_tchat = CTkTextbox(tabview.tab("Tchat"),height=130, state="disable")
+textbox_tchat = CTkTextbox(tabview.tab("Tchat"), height=130, wrap='word', activate_scrollbars=False, state="disable")
 textbox_tchat.grid(row=0, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
 entry_tchat = CTkEntry(tabview.tab("Tchat"))
 entry_tchat.grid(row=2, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")

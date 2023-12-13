@@ -41,17 +41,26 @@ class Client:
     
     
     def receive_message_serv(self):
-        while True:
-            data = self.socket.recv(1024)
-            message = pickle.loads(data)
-            try:
-                if message['serv']:
-                    return message['serv']
-            except socket.error as e:
-                break
+        data = self.socket.recv(1024)
+        message = pickle.loads(data)
+        try:
+            if message['serv']:
+                return message['serv']
+        except socket.error as e:
+            pass
+    
+    def receive_message_tchat(self):
+        data = self.socket.recv(1024)
+        message = pickle.loads(data)
+        try:
+            if message['tchat']:
+                return message['tchat']
+        except socket.error as e:
+            pass
     
     def receive_message(self):
         return self.socket.recv(1024).decode()
+ 
     
     def libéré_carte(self):
         pass
