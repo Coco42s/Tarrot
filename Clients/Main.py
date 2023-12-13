@@ -53,13 +53,33 @@ def receive_messages(socket):
                     textbox_jeu.configure(state="disable")
             except:
                 try:
-                    if message['serveur']:
-                        pass
+                    if message['serv']:
+                        print(message['serv'])
+                        textbox_serv.configure(state="normal")
+                        textbox_serv.insert(END, f"{message['serv']}\n")
+                        textbox_serv.configure(state="disable")
                 except:
-                    pass
+                    try:
+                        if message['tchat']:
+                            print(message['tchat'])
+                            textbox_tchat.configure(state="normal")
+                            textbox_tchat.insert(END, f"{message['tchat']}\n")
+                            textbox_tchat.configure(state="disable")
+                    except:
+                        pass
         except socket.error as e:
             print(f"Erreur lors de la réception du message: {str(e)}")
 
+
+def send_entry_serv():
+    data = str(entry_tchat.get())
+    msg = pickle.dumps({'tchat':data})
+    socket.sendall(msg)
+
+def send_entry_tchat():
+    data = str(entry_tchat.get())
+    msg = pickle.dumps({'tchat':data})
+    socket.sendall(msg)
 
 
 
@@ -72,7 +92,7 @@ def on_button_click_carte(button_text):
             image = Image.open(os.path.join(script_dir, "assets/cartes/dos.jpg"))
             image.thumbnail((60,200))
             photo = ImageTk.PhotoImage(image)
-            b[i].configure(state="disabled", command=None, image=photo)
+            b[i].configure(state="disabled", command=None, image=None)
             break
     data = str(button_text)
     data = data.encode("utf8")
@@ -80,13 +100,9 @@ def on_button_click_carte(button_text):
 
 
 def on_button_click(button_text):
-    
     data = str(button_text)
     data = data.encode("utf8")
     socket.sendall(data)
-
-
-
 
 #Widgets
 
@@ -214,6 +230,13 @@ textbox_serv = CTkTextbox(tabview.tab("Serveur"),height=130, state="disable")
 textbox_serv.grid(row=0, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
 entry_serv = CTkEntry(tabview.tab("Serveur"))
 entry_serv.grid(row=2, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
+entry_serv.bind('<Return>', send_entry_serv)
+
+textbox_tchat = CTkTextbox(tabview.tab("Tchat"),height=130, state="disable")
+textbox_tchat.grid(row=0, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
+entry_tchat = CTkEntry(tabview.tab("Tchat"))
+entry_tchat.grid(row=2, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
+entry_tchat.bind('<Return>', send_entry_tchat)
 
 
 #créé les boutons
@@ -227,7 +250,7 @@ a,b = carte_wid()
 tab_mune_option = CTkTabview(fenetre, width=250)
 tab_mune_option.grid(row=1, column=12, padx=(20, 20), pady=(20, 20), sticky="nsew")
 tab_mune_option.add("Jeux")
-tab_mune_option.add("Option ")
+tab_mune_option.add("Option")
 
 global tab_mune_option_Jeux_btPret
 tab_mune_option_Jeux_btPret = CTkButton(tab_mune_option.tab("Jeux"), text="Prêt", command=lambda t="pret": on_button_click(t))

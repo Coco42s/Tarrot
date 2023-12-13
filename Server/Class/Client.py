@@ -25,12 +25,39 @@ class Client:
         except socket.error as e:
             print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
     
+    def send_tchat(self, message):
+        try:
+            msg = pickle.dumps({'tchat':message})
+            self.socket.sendall(msg)
+        except socket.error as e:
+            print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
+    
+    def send_server(self, message):
+        try:
+            msg = pickle.dumps({'serv':message})
+            self.socket.sendall(msg)
+        except socket.error as e:
+            print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
+    
+    
+    def receive_message_serv(self):
+        while True:
+            data = self.socket.recv(1024)
+            message = pickle.loads(data)
+            try:
+                if message['serv']:
+                    return message['serv']
+            except socket.error as e:
+                break
+    
+    def receive_message(self):
+        return self.socket.recv(1024).decode()
+    
     def libéré_carte(self):
         pass
     
     def bloced_carte(self):
         pass
     
-    def receive_message(self):
-        return self.socket.recv(1024).decode()
+    
     

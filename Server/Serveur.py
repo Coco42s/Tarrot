@@ -49,12 +49,17 @@ def accept_connections():
         clients.append(client)
 
         # Envoyer un message de bienvenue
-        client.send_message(f"Bienvenue, {username}!\n")
-
+        client.send_server(f"Bienvenue, {username}!\nVous voulez jouer dans une partie a 3, 4 ou 5 ?")
+        choix = client.receive_message_serv()
+        client.send_server(choix)
         time.sleep(0.1)
         
+        
+        
+        
+        
         # Informer tout le monde de la nouvelle connexion
-        broadcast_message(f"{username} s'est connecté.")
+        #broadcast_message(f"{username} s'est connecté.")
 
         # Démarrer un thread pour gérer le client
         #client_thread = threading.Thread(target=handle_client, args=(client,))

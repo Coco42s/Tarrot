@@ -1,2 +1,5 @@
-test = [1,2]
-print(len(test))
+
+
+while True:
+    print("bonjour")
+    break
