@@ -3,48 +3,26 @@ import threading
 import json
 import pickle
 import time
+from Class.Client import *
 
-
-class Client:
-    def __init__(self, socket:socket.socket, address):
-        self.socket = socket
-        self.address = address
-        self.username = None
-    
-    def send_message(self, message):
-        try:
-            msg = pickle.dumps({'afficher': True, 'data': message})
-            self.socket.sendall(msg)
-        except socket.error as e:
-            print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
-
-    def send_data(self, data):
-        try:
-            msg = pickle.dumps({'afficher': True, 'data': data})
-            self.socket.sendall(msg)
-        except socket.error as e:
-            print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
-    
-    def receive_message(self):
-        return self.socket.recv(1024).decode()
 
 def handle_client(client:Client):
     while True:
         try:
             message = client.receive_message()
+            
             if not message:
                 break
-
-            # Traitement du message
-            broadcast_message(f"{client.username}: {message}")
+                 
         except Exception as e:
             print(f"Erreur de traitement pour {client.address}: {str(e)}")
             break
-
     # Si le client se déconnecte, le retirer de la liste
     clients.remove(client)
     broadcast_message(f"{client.username} s'est déconnecté.")
     client.socket.close()
+
+
 
 def broadcast_message(message):
     for client in clients:
@@ -79,8 +57,25 @@ def accept_connections():
         broadcast_message(f"{username} s'est connecté.")
 
         # Démarrer un thread pour gérer le client
-        client_thread = threading.Thread(target=handle_client, args=(client,))
-        client_thread.start()
+        #client_thread = threading.Thread(target=handle_client, args=(client,))
+        #client_thread.start()
+
+
+#---Partie Vérif
+
+def verifPartie():
+    while True:
+        if len(partie3) == 3:
+            pass
+        if len(partie4) == 4:
+            pass
+        if len(partie4) == 5:
+            pass
+        
+        time.sleep(1)
+
+
+#---Main
 
 if __name__ == "__main__":
     # Configuration du serveur
@@ -96,6 +91,11 @@ if __name__ == "__main__":
 
     # Liste des clients connectés
     clients = []
+    enAttente = []
+    
+    partie3 = []
+    partie4 = []
+    partie5 = []
 
     # Thread pour accepter les connexions
     accept_thread = threading.Thread(target=accept_connections)

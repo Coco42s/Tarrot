@@ -12,6 +12,9 @@ import threading
 import json
 import pickle
 
+#--------Fonction--------#
+
+#Serveur
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def connection():
@@ -37,95 +40,52 @@ def connection():
     except:
         print("connection serveur failed")
 
-"""def receive_messages(socket):
-    buffer = b""  # Buffer to store incomplete messages
-
-    while True:
-        try:
-            data = socket.recv(1024)
-            if not data:
-                # La connexion a été fermée
-                break
-
-            buffer += data
-            while len(buffer) > 0:
-                try:
-                    message, remaining_buffer = pickle.loads(buffer), b""
-                    
-                    if message['afficher'] == True:
-                        print(message['data'])
-                        textbox.configure(state="normal")
-                        textbox.insert(END, f"{message['data']}\n")
-                        textbox.configure(state="disable")
-
-                    buffer = remaining_buffer
-                except (pickle.UnpicklingError, ValueError):
-                    # Message incomplet, attendez plus de données
-                    break
-        except OSError as e:
-            print(f"Erreur lors de la réception du message: {str(e)}")
-            break"""
-
 def receive_messages(socket):
     while True:
         try:
             data = socket.recv(1024)
             message = pickle.loads(data)
-            if message['afficher'] == True:
-                print(message['data'])
-                textbox.configure(state="normal")
-                textbox.insert(END, f"{message['data']}\n")
-                textbox.configure(state="disable")
+            try:
+                if message['afficher'] == True:
+                    print(message['data'])
+                    textbox_jeu.configure(state="normal")
+                    textbox_jeu.insert(END, f"{message['data']}\n")
+                    textbox_jeu.configure(state="disable")
+            except:
+                try:
+                    if message['serveur']:
+                        pass
+                except:
+                    pass
         except socket.error as e:
             print(f"Erreur lors de la réception du message: {str(e)}")
+
+
+
+
+
+#jestion bouton
         
-def on_button_click(button_text):
-    #print(f"Bouton {button_text} cliqué!")
+def on_button_click_carte(button_text):
+    for i in range(len(a)):
+        if str(a[i]) == button_text:
+            image = Image.open(os.path.join(script_dir, "assets/cartes/dos.jpg"))
+            image.thumbnail((60,200))
+            photo = ImageTk.PhotoImage(image)
+            b[i].configure(state="disabled", command=None, image=photo)
+            break
     data = str(button_text)
     data = data.encode("utf8")
     socket.sendall(data)
 
-def initialize():
-    global script_dir
+
+def on_button_click(button_text):
     
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    #fenetre.iconbitmap(os.path.join(script_dir, "assets//icons8-nasa-16.png"))
-    #image = PhotoImage(file=os.path.join(script_dir, "assets//icons8-nasa-16.png"))
-    #fenetre.iconphoto(False, image)
+    data = str(button_text)
+    data = data.encode("utf8")
+    socket.sendall(data)
 
 
-def change_appearance_mode_event(new_appearance_mode: str):
-    set_appearance_mode(new_appearance_mode)
-
-def change_scaling_event(new_scaling: str):
-        new_scaling_float = int(new_scaling.replace("%", "")) / 100
-        set_widget_scaling(new_scaling_float)
-
-def menubar():
-    menubar = Menu(fenetre)
-
-    menu1 = Menu(menubar, tearoff=0)
-    menu1.add_command(label="Créer", command=alert)
-    menu1.add_command(label="Editer", command=alert)
-    menu1.add_separator()
-    menu1.add_command(label="Quitter", command=fenetre.quit)
-    menubar.add_cascade(label="Fichier", menu=menu1)
-
-    menu2 = Menu(menubar, tearoff=0)
-    menu2.add_command(label="Couper", command=alert)
-    menu2.add_command(label="Copier", command=alert)
-    menu2.add_command(label="Coller", command=alert)
-    menubar.add_cascade(label="Editer", menu=menu2)
-
-    menu3 = Menu(menubar, tearoff=0)
-    menu3.add_command(label="A propos", command=alert)
-    menubar.add_cascade(label="Aide", menu=menu3)
-
-    fenetre.config(menu=menubar)
-
-def alert():
-    pass
 
 
 #Widgets
@@ -169,17 +129,16 @@ def side_bar():
     
     return
 
-
-
 def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a12","a13","a14","a15","a16","a17","a18","a19","a20","a21","a22","a23","a24"]):
-    a=[]
+    a,b=[],[]
     cmpt = 1 
     for i in list:
-        image = Image.open(os.path.join(script_dir, "../assets/cartes/petit.jpg"))
+        a.append(i)
+        image = Image.open(os.path.join(script_dir, "assets/cartes/petit.jpg"))
         image.thumbnail((60,200))
         photo = ImageTk.PhotoImage(image)
-        i = CTkButton(carte, image = photo, text = "",width=0,command=lambda t=i: on_button_click(t))#,height=0)
-        a.append(i)
+        i = CTkButton(carte, image = photo, text = "",width=0,command=lambda t=i: on_button_click_carte(t))#,height=0)
+        b.append(i)
         if cmpt <= 8:
             if cmpt == 8:
                 i.grid(row=1, column=cmpt, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -198,9 +157,31 @@ def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a
                     i.grid(row=3, column=cmpt-16, padx=(20, 0), pady=(20, 20), sticky="nsew")
         
         cmpt += 1
-    return a
+    return a,b
 
-#Main
+
+
+
+def change_appearance_mode_event(new_appearance_mode: str):
+    set_appearance_mode(new_appearance_mode)
+
+def change_scaling_event(new_scaling: str):
+        new_scaling_float = int(new_scaling.replace("%", "")) / 100
+        set_widget_scaling(new_scaling_float)
+
+#Initialisation
+
+def initialize():
+    global script_dir
+    
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    fenetre.iconbitmap(os.path.join(script_dir, "assets/logo/logo.ico"))
+    image = PhotoImage(file=os.path.join(script_dir, "assets/logo/logo.png"))
+    fenetre.iconphoto(False, image)
+
+
+#-----------Main-----------#
 
 set_appearance_mode("dark")
 fenetre = CTk()
@@ -220,31 +201,35 @@ side_bar()
 
 
 # create textbox
-textbox = CTkTextbox(fenetre, width=250, state="disable")
-textbox.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+textbox_jeu = CTkTextbox(fenetre, width=250, state="disable")
+textbox_jeu.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
 # create tabview
 tabview = CTkTabview(fenetre, width=250)
 tabview.grid(row=0, column=12, padx=(20, 20), pady=(20, 0), sticky="nsew")
-tabview.add("Coeur")
-tabview.add("Pique ")
-tabview.add("Carreau")
-tabview.add("Trefle ")
+tabview.add("Tchat")
+tabview.add("Serveur")
 
+textbox_serv = CTkTextbox(tabview.tab("Serveur"),height=150, state="disable")
+textbox_serv.grid(row=0, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
+entry_serv = CTkEntry(tabview.tab("Serveur"))
+entry_serv.grid(row=2, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
 
 
 #créé les boutons
 carte = CTkFrame(fenetre, width=250)
 carte.grid(row=1, column=1, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
-a = carte_wid()
-#a[0].configure(state="disable",command=None)
+global a,b
+a,b = carte_wid()
+
 
 tab_mune_option = CTkTabview(fenetre, width=250)
 tab_mune_option.grid(row=1, column=12, padx=(20, 20), pady=(20, 20), sticky="nsew")
 tab_mune_option.add("Jeux")
 tab_mune_option.add("Option ")
 
+global tab_mune_option_Jeux_btPret
 tab_mune_option_Jeux_btPret = CTkButton(tab_mune_option.tab("Jeux"), text="Prêt", command=lambda t="pret": on_button_click(t))
 tab_mune_option_Jeux_btPret.grid(row=0, column=0, padx=50, pady=(10, 10))
 
