@@ -210,7 +210,7 @@ tabview.grid(row=0, column=12, padx=(20, 20), pady=(20, 0), sticky="nsew")
 tabview.add("Tchat")
 tabview.add("Serveur")
 
-textbox_serv = CTkTextbox(tabview.tab("Serveur"),height=150, state="disable")
+textbox_serv = CTkTextbox(tabview.tab("Serveur"),height=130, state="disable")
 textbox_serv.grid(row=0, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
 entry_serv = CTkEntry(tabview.tab("Serveur"))
 entry_serv.grid(row=2, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
