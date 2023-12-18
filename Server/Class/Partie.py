@@ -21,3 +21,6 @@ class Partie:
         
         self.joueCarte = []
         
+    def run(self, nb_joueur, joueur):
+        pass
+        
