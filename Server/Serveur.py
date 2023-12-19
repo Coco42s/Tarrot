@@ -77,7 +77,8 @@ def accept_connections():
 def verifPartie():
     while True:
         if len(partie3) == 3:
-            pass
+            partie_new = threading.Thread(target=accept_connections)
+            partie_new.start()
         if len(partie4) == 4:
             pass
         if len(partie4) == 5:
@@ -165,7 +166,12 @@ if __name__ == "__main__":
     partie3 = []
     partie4 = []
     partie5 = []
+    
+    # Thread pour vérif partie
+    PartVerf = threading.Thread(target=verifPartie)
+    PartVerf.start()
 
     # Thread pour accepter les connexions
     accept_thread = threading.Thread(target=accept_connections)
     accept_thread.start()
+    

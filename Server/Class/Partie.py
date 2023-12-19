@@ -1,4 +1,6 @@
+from tracemalloc import stop
 from Client import *
+from Paquet  import * 
 
 
 
@@ -20,7 +22,23 @@ class Partie:
         self.chien = []
         
         self.joueCarte = []
+        self.joueurCarte = {}
+        
+        if len(joueur) != nb_joueur:
+            self.stop(1)
+            
+        self.paquet_carte()
+        print(self.carte)
         
     def run(self, nb_joueur, joueur):
         pass
-        
+    
+    def stop(self, n):
+        if n == 1:
+            del self
+    
+    def paquet_carte(self):
+        pac = Paquet()
+        pac.fabriques() 
+        self.carte = pac.get_jeu
+    
