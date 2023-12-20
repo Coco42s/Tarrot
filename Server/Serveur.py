@@ -79,6 +79,7 @@ def verifPartie():
         if len(partie3) == 3:
             partie_new = threading.Thread(target=accept_connections)
             partie_new.start()
+            
         if len(partie4) == 4:
             pass
         if len(partie4) == 5:
