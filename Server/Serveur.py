@@ -4,6 +4,8 @@ import json
 import pickle
 import time
 from Class.Client import *
+from Server.Class.Paquet import Paquet
+from Server.Class.Partie import Partie
 
 #---Send Message
 
@@ -77,8 +79,8 @@ def accept_connections():
 def verifPartie():
     while True:
         if len(partie3) == 3:
-            partie_new = threading.Thread(target=accept_connections)
-            partie_new.start()
+            
+            pass
             
         if len(partie4) == 4:
             pass
@@ -167,6 +169,8 @@ if __name__ == "__main__":
     partie3 = []
     partie4 = []
     partie5 = []
+    
+    ptt3 = Partie()
     
     # Thread pour vérif partie
     PartVerf = threading.Thread(target=verifPartie)

@@ -7,9 +7,9 @@ from Paquet  import *
 class Partie:
     
     
-    def __init__(self, nb_joueur, joueur):
-        self.nbJoueur = nb_joueur
-        self.joueur = joueur
+    def __init__(self):
+        self.nbJoueur = 0
+        self.joueur = ""
         
         self.valeurPris = 0
         
@@ -24,14 +24,12 @@ class Partie:
         self.joueCarte = []
         self.joueurCarte = {}
         
-        if len(joueur) != nb_joueur:
-            self.stop(1)
+        self.status = True
             
+        
+    def run(self):
         self.paquet_carte()
         print(self.carte)
-        
-    def run(self, nb_joueur, joueur):
-        pass
     
     def stop(self, n):
         if n == 1:
