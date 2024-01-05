@@ -1,4 +1,5 @@
-from Carte import *
+from Class.Carte import Carte
+
 class Paquet:
     """ Sette class représente un paquet
     

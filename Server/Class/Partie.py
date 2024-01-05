@@ -1,7 +1,6 @@
-from tracemalloc import stop
-from Client import *
-from Paquet  import * 
-
+from Class.Client import *
+from Class.Paquet  import * 
+from random import *
 
 
 class Partie:
@@ -9,12 +8,15 @@ class Partie:
     
     def __init__(self):
         self.nbJoueur = 0
-        self.joueur = ""
+        self.joueur = []
         
         self.valeurPris = 0
         
         self.pointPris = 0
+        self.cartePris =[]
+        
         self.pointAutre = 0
+        self.carteAutre = []
         
         self.apelRoix = ""
         
@@ -24,7 +26,7 @@ class Partie:
         self.joueCarte = []
         self.joueurCarte = {}
         
-        self.status = True
+        self.status = False
             
         
     def run(self):
@@ -38,5 +40,6 @@ class Partie:
     def paquet_carte(self):
         pac = Paquet()
         pac.fabriques() 
-        self.carte = pac.get_jeu
+        self.carte = pac.get_jeu()
+        shuffle(self.carte)
     
