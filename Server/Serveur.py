@@ -79,12 +79,12 @@ def accept_connections():
 def verifPartie():
     global partie3
     while True:
-        if len(partie3) == 3:
+        if len(partie3) == 1:
             if ptt3.status == False:
                 ptt3.status = True
-                ptt3.nbJoueur = 3
-                ptt3.joueur = [partie3[0],partie3[1],partie3[2]]
-                partie3 = partie3[3:]
+                ptt3.nbJoueur = 1
+                ptt3.joueur = [partie3[0]]
+                partie3 = partie3[1:]
                 ptt3.run()
             pass
             

@@ -13,14 +13,14 @@ class Client:
     
     def send_message(self, message):
         try:
-            msg = pickle.dumps({'afficher': True, 'data': message})
+            msg = pickle.dumps({'afficher': True, 'affich': message})
             self.socket.sendall(msg)
         except socket.error as e:
             print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
 
-    def send_data(self, data):
+    def send_data(self, data, obj):
         try:
-            msg = pickle.dumps({'afficher': False, 'data': data})
+            msg = pickle.dumps({'obj':obj, 'data': data})
             self.socket.sendall(msg)
         except socket.error as e:
             print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")

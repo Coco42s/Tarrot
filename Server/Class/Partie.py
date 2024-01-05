@@ -54,24 +54,22 @@ class Partie:
     def distribut(self, ch):
         carteDistri = self.carte
         
-        self.joueurCarte[str(self.joueur[0].username)] = []
-        self.joueurCarte[str(self.joueur[1].username)] = []
-        self.joueurCarte[str(self.joueur[2].username)] = []
+        for i in range(self.nbJoueur):
+            self.joueurCarte[str(self.joueur[i].username)] = []
         
         for i in range(1,int(((78-ch)/3)/3+1)):
-            self.joueurCarte[str(self.joueur[0].username)].append(carteDistri[0])
-            self.joueurCarte[str(self.joueur[1].username)].append(carteDistri[1])
-            self.joueurCarte[str(self.joueur[2].username)].append(carteDistri[2])
-            carteDistri = carteDistri[3:]
-            
-            self.joueurCarte[str(self.joueur[0].username)].append(carteDistri[0])
-            self.joueurCarte[str(self.joueur[1].username)].append(carteDistri[1])
-            self.joueurCarte[str(self.joueur[2].username)].append(carteDistri[2])
-            carteDistri = carteDistri[3:]
-            
-            self.joueurCarte[str(self.joueur[0].username)].append(carteDistri[0])
-            self.joueurCarte[str(self.joueur[1].username)].append(carteDistri[1])
-            self.joueurCarte[str(self.joueur[2].username)].append(carteDistri[2])
-            carteDistri = carteDistri[3:]
+            for i in range(self.nbJoueur):
+                self.joueurCarte[str(self.joueur[i].username)].append(carteDistri[i])
+                self.joueurCarte[str(self.joueur[i].username)].append(carteDistri[i+1])
+                self.joueurCarte[str(self.joueur[i].username)].append(carteDistri[i+2])
+                carteDistri = carteDistri[3:]
         
         self.chien = carteDistri
+        
+        for i in range(self.nbJoueur):
+            self.joueur[i].send_message(str(self.joueurCarte[str(self.joueur[i].username)]))
+        
+        for i in range(self.nbJoueur):
+            self.joueur[i].send_data("carteDist","aaaa")
+        
+        

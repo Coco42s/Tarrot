@@ -48,7 +48,7 @@ def receive_messages(socket):
             try:
                 if message['afficher'] == True:
                     textbox_jeu.configure(state="normal")
-                    textbox_jeu.insert(END, f"{message['data']}\n")
+                    textbox_jeu.insert(END, f"{message['affich']}\n")
                     textbox_jeu.configure(state="disable")
             except:
                 try:
@@ -65,7 +65,12 @@ def receive_messages(socket):
                             textbox_tchat.configure(state="disable")
                             textbox_tchat.see(END)
                     except:
-                        pass
+                        try:
+                            if message['data']:
+                                print("bb")
+                                exploit_data(message['obj'], message['data'])
+                        except:
+                            pass
         except socket.error as e:
             print(f"Erreur lors de la réception du message: {str(e)}")
 
@@ -83,7 +88,15 @@ def send_entry_tchat(event):
     socket.sendall(msg)
     entry_tchat.delete(0, 'end')
 
-
+# DATA
+def exploit_data(obj, data):
+    print("tt")
+    if obj == "carteDist":
+        
+        textbox_jeu.configure(state="normal")
+        textbox_jeu.insert(END, f"Coucou\n")
+        textbox_jeu.configure(state="disable")
+    pass
 
 #jestion bouton
         
@@ -148,18 +161,22 @@ def side_bar():
     
     return
 
-def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a12","a13","a14","a15","a16","a17","a18","a19","a20","a21","a22","a23","a24"]):
+def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a12","a13","a14","a15","a16","a17","a18","a19","a20","a21","a22","a23","a24"],act=False):
     a,b=[],[]
     cmpt = 1 
     for i in list:
         a.append(i)
-        image = Image.open(os.path.join(script_dir, "assets/cartes/petit re.jpg"))
+        if act == True:
+            image = Image.open(os.path.join(script_dir, "assets/cartes/"+str(i)+".jpg"))
+        else:
+            image = Image.open(os.path.join(script_dir, "assets/cartes/dos.jpg"))
         image.thumbnail((60,200))
         photo = ImageTk.PhotoImage(image)
         i = CTkButton(carte, image = photo, text = "",width=0,command=lambda t=i: on_button_click_carte(t))#,height=0)
         b.append(i)
         if cmpt <= 8:
             if cmpt == 8:
+                
                 i.grid(row=1, column=cmpt, padx=(20, 20), pady=(20, 0), sticky="nsew")
             else: 
                 i.grid(row=1, column=cmpt, padx=(20, 0), pady=(20, 0), sticky="nsew")
@@ -178,7 +195,12 @@ def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a
         cmpt += 1
     return a,b
 
+def del_carte():
+    for i in b:
+        i.destroy()
 
+def recu_carte():
+    pass
 
 
 def change_appearance_mode_event(new_appearance_mode: str):
@@ -248,7 +270,6 @@ carte.grid(row=1, column=1, padx=(20, 0), pady=(20, 20), sticky="nsew")
 
 global a,b
 a,b = carte_wid()
-
 
 tab_mune_option = CTkTabview(fenetre, width=250)
 tab_mune_option.grid(row=1, column=12, padx=(20, 20), pady=(20, 20), sticky="nsew")
