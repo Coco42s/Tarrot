@@ -49,5 +49,5 @@ class Carte:
         if self.__valeur >= 10 and self.__couleur != "Atout" and self.__couleur != "Excuse":
             for i in self.__honneurs:
                 if i != 1:
-                    return f"{self.__honneurs[self.__valeur]} de {self.__couleur}"
+                    return f"{self.__couleur} {self.__valeur}"
         return "0"

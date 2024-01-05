@@ -90,27 +90,39 @@ def send_entry_tchat(event):
 
 # DATA
 def exploit_data(obj, data):
-    print("tt")
+    global a,b,statCarte
     if obj == "carteDist":
+        del_carte()
+        str_variable = data
+        str_variable_fixed = str_variable.replace(", ", ",").replace(",", "','").replace("[", "['").replace("]", "']")
+        data = eval(str_variable_fixed)
+        a,b=carte_wid(data,True)
+    
+    if obj == "cAct":
+        str_variable = data
+        data = eval(str_variable)
         
-        textbox_jeu.configure(state="normal")
-        textbox_jeu.insert(END, f"Coucou\n")
-        textbox_jeu.configure(state="disable")
+        print(type(data))
+        if data:
+            statCarte = True
+        else:
+            statCarte = False
     pass
 
 #jestion bouton
         
 def on_button_click_carte(button_text):
-    for i in range(len(a)):
-        if str(a[i]) == button_text:
-            image = Image.open(os.path.join(script_dir, "assets/cartes/dos.jpg"))
-            image.thumbnail((60,200))
-            photo = ImageTk.PhotoImage(image)
-            b[i].configure(state="disabled", command=None, image=None)
-            break
-    data = str(button_text)
-    data = data.encode("utf8")
-    socket.sendall(data)
+    if statCarte:
+        for i in range(len(a)):
+            if str(a[i]) == button_text:
+                image = Image.open(os.path.join(script_dir, "assets/cartes/dos.jpg"))
+                image.thumbnail((60,200))
+                photo = ImageTk.PhotoImage(image)
+                b[i].configure(state="disabled", command=None, image=photo)
+                break
+        data = str(button_text)
+        data = data.encode("utf8")
+        socket.sendall(data)
 
 
 def on_button_click(button_text):
@@ -195,12 +207,13 @@ def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a
         cmpt += 1
     return a,b
 
+def dapa():
+    print("CC")
+
 def del_carte():
     for i in b:
         i.destroy()
 
-def recu_carte():
-    pass
 
 
 def change_appearance_mode_event(new_appearance_mode: str):
@@ -223,7 +236,7 @@ def initialize():
 
 
 #-----------Main-----------#
-
+global fenetre
 set_appearance_mode("dark")
 fenetre = CTk()
 fenetre.geometry("1280x720")
@@ -265,6 +278,7 @@ entry_tchat.bind('<Return>', send_entry_tchat)
 
 
 #créé les boutons
+global carte
 carte = CTkFrame(fenetre, width=788, height=416)
 carte.grid(row=1, column=1, padx=(20, 0), pady=(20, 20), sticky="nsew")
 

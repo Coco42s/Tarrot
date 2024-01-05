@@ -70,6 +70,9 @@ class Partie:
             self.joueur[i].send_message(str(self.joueurCarte[str(self.joueur[i].username)]))
         
         for i in range(self.nbJoueur):
-            self.joueur[i].send_data("carteDist","aaaa")
+            self.joueur[i].send_data("carteDist",str(self.joueurCarte[str(self.joueur[i].username)]))
         
+        time.sleep(2)
         
+        for i in range(self.nbJoueur):
+            self.joueur[i].bloced_carte()

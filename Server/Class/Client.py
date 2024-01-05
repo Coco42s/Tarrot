@@ -18,7 +18,7 @@ class Client:
         except socket.error as e:
             print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
 
-    def send_data(self, data, obj):
+    def send_data(self, obj, data):
         try:
             msg = pickle.dumps({'obj':obj, 'data': data})
             self.socket.sendall(msg)
@@ -63,10 +63,18 @@ class Client:
  
     
     def libéré_carte(self):
-        pass
+        try:
+            msg = pickle.dumps({'obj':"cAct", 'data': str(True)})
+            self.socket.sendall(msg)
+        except socket.error as e:
+            print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
     
     def bloced_carte(self):
-        pass
+        try:
+            msg = pickle.dumps({'obj':"cAct", 'data': str(False)})
+            self.socket.sendall(msg)
+        except socket.error as e:
+            print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
     
     
     
