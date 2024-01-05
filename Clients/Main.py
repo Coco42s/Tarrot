@@ -153,7 +153,7 @@ def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a
     cmpt = 1 
     for i in list:
         a.append(i)
-        image = Image.open(os.path.join(script_dir, "assets/cartes/petit.jpg"))
+        image = Image.open(os.path.join(script_dir, "assets/cartes/petit re.jpg"))
         image.thumbnail((60,200))
         photo = ImageTk.PhotoImage(image)
         i = CTkButton(carte, image = photo, text = "",width=0,command=lambda t=i: on_button_click_carte(t))#,height=0)

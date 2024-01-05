@@ -1,6 +1,4 @@
-import random
-
-ma_liste = [1, 2, 3, 4, 5]
-random.shuffle(ma_liste)
-
-print("Liste mélangée :", ma_liste)
+a=1
+b=a
+b=3
+print(a,b)
