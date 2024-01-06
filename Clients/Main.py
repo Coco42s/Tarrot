@@ -67,7 +67,6 @@ def receive_messages(socket):
                     except:
                         try:
                             if message['data']:
-                                print("bb")
                                 exploit_data(message['obj'], message['data'])
                         except:
                             pass
@@ -87,6 +86,15 @@ def send_entry_tchat(event):
     msg = pickle.dumps({'tchat':data})
     socket.sendall(msg)
     entry_tchat.delete(0, 'end')
+
+def send_data_serv(data):
+    try:
+        msg = pickle.dumps({'data':data})
+        socket.sendall(msg)
+    except:
+        textbox_jeu.configure(state="normal")
+        textbox_jeu.insert(END, f"Votre data est pas parvenu au serveur veuiller réséiller \n")
+        textbox_jeu.configure(state="disable")
 
 # DATA
 def exploit_data(obj, data):
@@ -121,8 +129,7 @@ def on_button_click_carte(button_text):
                 b[i].configure(state="disabled", command=None, image=photo)
                 break
         data = str(button_text)
-        data = data.encode("utf8")
-        socket.sendall(data)
+        send_data_serv(data)
 
 
 def on_button_click(button_text):

@@ -41,13 +41,14 @@ class Client:
     
     
     def receive_message_serv(self):
-        data = self.socket.recv(1024)
-        message = pickle.loads(data)
-        try:
-            if message['serv']:
-                return message['serv']
-        except socket.error as e:
-            pass
+        while True:
+            data = self.socket.recv(1024)
+            message = pickle.loads(data)
+            try:
+                if message["serv"]:
+                    return message["serv"]
+            except:
+                pass
     
     def receive_message_tchat(self):
         data = self.socket.recv(1024)
@@ -55,6 +56,15 @@ class Client:
         try:
             if message['tchat']:
                 return message['tchat']
+        except socket.error as e:
+            pass
+    
+    def receive_data_serv(self):
+        data = self.socket.recv(1024)
+        message = pickle.loads(data)
+        try:
+            if message['data']:
+                return message['data']
         except socket.error as e:
             pass
     

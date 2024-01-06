@@ -37,9 +37,9 @@ def accept_connections():
         client = Client(client_socket, client_address)
 
         # Demander le nom d'utilisateur au client
-        client.send_message("Hello !\nVas Voir le chanel Serveur !")
         username = client.receive_message()
         client.username = username
+        client.send_message(f"Hello {username} !\nVas Voir le chanel Serveur !")
 
         # Ajouter le client à la liste
         clients.append(client)
