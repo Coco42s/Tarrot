@@ -42,13 +42,22 @@ class Client:
     
     def receive_message_serv(self):
         while True:
-            data = self.socket.recv(1024)
-            message = pickle.loads(data)
             try:
-                if message["serv"]:
-                    return message["serv"]
-            except:
-                pass
+                if self.socket.fileno() == -1:
+                    # Le socket n'est plus valide, fermez proprement la connexion
+                    self.socket.close()
+                    break
+                data = self.socket.recv(1024)
+                message = pickle.loads(data)
+                try:
+                    if message["serv"]:
+                        return message["serv"]
+                except:
+                    pass
+            except socket.error as e:
+                print(e)
+                break
+            
     
     def receive_message_tchat(self):
         data = self.socket.recv(1024)
