@@ -15,7 +15,7 @@ def tchat_msg_send(message, lst):
             client.send_tchat(message)
         except:
             # En cas d'erreur, le client peut être retiré de la liste
-            clients.remove(client)
+           # clients.remove(client)
 
 def broadcast_message(message):
     for client in clients:
@@ -23,7 +23,7 @@ def broadcast_message(message):
             client.send_message(message)
         except:
             # En cas d'erreur, le client peut être retiré de la liste
-            clients.remove(client)
+           # clients.remove(client)
 
 
 #---Acpet conection
@@ -111,7 +111,7 @@ def tchat_p3(client:Client):
     # Si le client se déconnecte, le retirer de la liste
     clients.remove(client)
     broadcast_message(f"{client.username} s'est déconnecté.")
-    client.socket.close()
+    #client.socket.close()
 
 
 
@@ -130,7 +130,7 @@ def tchat_p4(client:Client):
     # Si le client se déconnecte, le retirer de la liste
     clients.remove(client)
     broadcast_message(f"{client.username} s'est déconnecté.")
-    client.socket.close()
+    #client.socket.close()
 
 
 
@@ -149,7 +149,7 @@ def tchat_p5(client:Client):
     # Si le client se déconnecte, le retirer de la liste
     clients.remove(client)
     broadcast_message(f"{client.username} s'est déconnecté.")
-    client.socket.close()
+    #client.socket.close()
 
 
 
