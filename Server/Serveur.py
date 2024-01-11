@@ -15,7 +15,7 @@ def tchat_msg_send(message, lst):
             client.send_tchat(message)
         except:
             # En cas d'erreur, le client peut être retiré de la liste
-           # clients.remove(client)
+            clients.remove(client)
 
 def broadcast_message(message):
     for client in clients:
@@ -23,7 +23,7 @@ def broadcast_message(message):
             client.send_message(message)
         except:
             # En cas d'erreur, le client peut être retiré de la liste
-           # clients.remove(client)
+            clients.remove(client)
 
 
 #---Acpet conection
@@ -45,30 +45,31 @@ def accept_connections():
         clients.append(client)
 
         # Envoyer un message de bienvenue
-        client.send_server(f"Bienvenue, {username}!\nVous voulez jouer dans une partie a 3, 4 ou 5 joueur ?")
+        client.send_server(f"Bienvenue, {username}!\nVous voulez jouer dans une partie a 3, 4 ou 5 joueur ?\n")
         
-        
-        while True:
+        at = True
+        while at:
             choix = client.receive_message_serv()
             if choix == '3':
                 partie3.append(client)
-                client.send_server(f"\nVous avez été mis en attent dans une partie a 3 joueur !\nLe tchat de la partie est disponible !")
-                client_tchat_thread = threading.Thread(target=tchat_p3, args=(client,))
-                client_tchat_thread.start()
-                break
+                client.send_server(f"\nVous avez été mis en attent dans une partie a 3 joueur !\n\nLe tchat sera disponible une foix dans une partie !\n")
+                #client_tchat_thread = threading.Thread(target=tchat_p3, args=(client,))
+                #client_tchat_thread.start()
+                at = False
             if choix == '4':
                 partie4.append(client)
-                client.send_server(f"\nVous avez été mis en attent dans une partie a 4 joueur !\nLe tchat de la partie est disponible !")
+                client.send_server(f"\nVous avez été mis en attent dans une partie a 4 joueur !\n\nLe tchat d'attante des partie a quatre joueur est disponible !\n")
                 client_tchat_thread = threading.Thread(target=tchat_p4, args=(client,))
                 client_tchat_thread.start()
-                break
+                at = False
             if choix == '5':
                 partie5.append(client)
-                client.send_server(f"\nVous avez été mis en attent dans une partie a 5 joueur !\nLe tchat de la partie est disponible !")
+                client.send_server(f"\nVous avez été mis en attent dans une partie a 5 joueur !\n\nLe tchat d'attante des partie a cinq joueur est disponible !\n")
                 client_tchat_thread = threading.Thread(target=tchat_p5, args=(client,))
                 client_tchat_thread.start()
-                break
-            client.send_server(f"\nVous devez choisire 3, 4 ou 5 ?")
+                at = False
+            if choix != '3' and choix != '4' and choix != '5':
+                client.send_server(f"Vous devez choisire 3, 4 ou 5 ?\n")
         
         
         time.sleep(0.1)

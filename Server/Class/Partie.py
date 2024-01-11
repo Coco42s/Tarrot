@@ -98,20 +98,35 @@ class Partie:
     def prend(self):
         temp = []
         for i in range(self.nbJoueur):
-            self.joueur[i].send_message("0 : Passe\n1 : Petit\n2 : Garde\n3 : Garde Sans\n4 : Garde Contre\n\nVeuiller écrire votre choix dans le chanel serveur")
-            while True:
+            self.joueur[i].send_message("\n0 : Passe\n1 : Petit\n2 : Garde\n3 : Garde Sans\n4 : Garde Contre\n\nVeuiller écrire votre choix dans le chanel serveur\n")
+            ta = True
+            while ta:
+                print("85")
                 choix = self.joueur[i].receive_message_serv()
-                if choix != 0 and choix != 1 and choix != 2 and choix != 3 and choix != 4:
-                    self.joueur[i].send_server("Veuiller choisir un chifre entre 0 et 4")
+                if choix != "0" and choix != "1" and choix != "2" and choix != "3" and choix != "4":
+                    self.joueur[i].send_server("Veuiller choisir un chifre entre 0 et 4 !\n")
                 else:
                     temp.append(choix)
+                    self.joueur[i].send_server(f"Vous avez choisie {choix}\n")
+                    ta = False
+            if choix == "0": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi de passer !\n")
+            if choix == "1": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Petit !\n")
+            if choix == "2": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde !\n")
+            if choix == "3": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde Sans \n!")
+            if choix == "0": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde Contre !\n")
+            time.sleep(0.5)
+        
+        if all(x == "0" for x in temp):
+            self.broadcast_player(f"Tout le monde passe on recomence !")
+            print("aa")
+        else:
+            print("bb")
+            for i in range(len(temp)):
+                if temp[i]==max(temp):
+                    self.broadcast_player(f"Le joueur {self.joueur[i].username} a pris !")
+                    self.valeurPris = max(temp)
+                    self.joueurPris = self.joueur[i]
                     break
-        for i in range(len(temp)):
-            if temp[i]==max(temp):
-                self.broadcast_player(f"Le joueur {self.joueur[i].username} a pris !")
-                self.valeurPris = max(temp)
-                self.joueurPris = self.joueur[i]
-                break
                 
                 
                 
