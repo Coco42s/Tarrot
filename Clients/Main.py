@@ -50,6 +50,7 @@ def receive_messages(socket):
                     textbox_jeu.configure(state="normal")
                     textbox_jeu.insert(END, f"{message['affich']}\n")
                     textbox_jeu.configure(state="disable")
+                    textbox_jeu.see(END)
             except:
                 try:
                     if message['serv']:
@@ -70,7 +71,7 @@ def receive_messages(socket):
                                 exploit_data(message['obj'], message['data'])
                         except:
                             pass
-        except socket.error as e:
+        except socket as e:
             print(f"Erreur lors de la réception du message: {str(e)}")
 
 
@@ -84,6 +85,7 @@ def send_entry_serv(event):
 def send_entry_tchat(event):
     data = str(entry_tchat.get())
     msg = pickle.dumps({'tchat':data})
+    socket.sendall(msg)
     socket.sendall(msg)
     entry_tchat.delete(0, 'end')
 
@@ -115,6 +117,13 @@ def exploit_data(obj, data):
             statCarte = True
         else:
             statCarte = False
+            
+    if obj == "rlCarte":
+        del_carte()
+        time.sleep(0.5)
+        a,b=carte_wid()
+    
+    
     pass
 
 #jestion bouton
@@ -181,6 +190,7 @@ def side_bar():
     return
 
 def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a12","a13","a14","a15","a16","a17","a18","a19","a20","a21","a22","a23","a24"],act=False):
+    global b
     a,b=[],[]
     cmpt = 1 
     for i in list:
@@ -218,6 +228,7 @@ def dapa():
     print("CC")
 
 def del_carte():
+    global b
     for i in b:
         i.destroy()
 

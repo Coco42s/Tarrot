@@ -86,6 +86,7 @@ def verifPartie():
                 ptt3.nbJoueur = 1
                 ptt3.joueur = [partie3[0]]
                 partie3 = partie3[1:]
+                ptt3.tchatStart()
                 ptt3.run()
             pass
             

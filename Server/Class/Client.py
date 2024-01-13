@@ -57,8 +57,7 @@ class Client:
             except socket.error as e:
                 print(e)
                 break
-            
-    
+                
     def receive_message_tchat(self):
         data = self.socket.recv(1024)
         message = pickle.loads(data)
@@ -66,7 +65,7 @@ class Client:
             if message['tchat']:
                 return message['tchat']
         except socket.error as e:
-            pass
+            print("error")
     
     def receive_data_serv(self):
         data = self.socket.recv(1024)
@@ -95,5 +94,5 @@ class Client:
         except socket.error as e:
             print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")
     
-    
+   
     

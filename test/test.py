@@ -1,5 +1,4 @@
-a =[0,5,9]
-print(max(a))
-for i in range(len(a)):
-    if a[i]==max(a):
-        print("aa")
+a =["0"]
+
+if all(x == "0" for x in a):
+    print("bonjour")

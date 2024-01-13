@@ -6,7 +6,6 @@ from random import *
 
 class Partie:
     
-    
     def __init__(self):
         self.nbJoueur = 0
         self.joueur = []
@@ -31,15 +30,40 @@ class Partie:
         
         self.status = False
 
+        
+# Status
+
     def attent(self):
         for i in range(self.nbJoueur):
             self.joueur[i].send_message(f"Vous etes dans une partie a {self.nbJoueur} joueurs !\n Les joueur sont :")
             for i in range(self.nbJoueur):
                 self.joueur[i].send_message(f"{self.joueur[i].username}")
             self.joueur[i].send_message("\n\nAppuiller sur pres pour commencer.")
-        
                 
+    def rl(self, st = True):
+        if st:
+            self.__init__()
+        else:
             
+            self.valeurPris = 0
+            self.joueurPris = ""
+            
+            self.pointPris = 0
+            self.cartePris =[]
+            
+            self.pointAutre = 0
+            self.carteAutre = []
+            
+            self.apelRoix = ""
+            self.nbChien = 6
+            
+            self.carte = []
+            self.chien = []
+            
+            self.joueCarte = []
+            self.joueurCarte = {}
+            
+            self.run()
         
     def run(self):
         self.paquet_carte()
@@ -50,6 +74,8 @@ class Partie:
         self.distribut(self.nbChien)
         
         self.prend()
+
+# Comm
         
     def broadcast_player(self, message):
         for client in self.joueur:
@@ -57,12 +83,30 @@ class Partie:
                 client.send_message(message)
             except:
                 pass
+
+    def broadcast_tchat(self, message):
+        for client in self.joueur:
+            try:
+                client.send_tchat(message)
+            except:
+                print("Brod error")
+
+    def tchat(self, client:Client):
+        while True:
+            try:
+                message = client.receive_message_tchat()
+                self.broadcast_tchat(f"{client.username} : {message}")   
+            except:
+                print("Tchat error")
+
+    def tchatStart(self):
+        for i in range(self.nbJoueur):
+            client_tchat_thread = threading.Thread(target=self.tchat, args=(self.joueur[i],))
+            client_tchat_thread.start()
+            
         
-        
-    def stop(self, n):
-        if n == 1:
-            del self
-    
+# Jeux
+   
     def paquet_carte(self):
         pac = Paquet()
         pac.fabriques() 
@@ -84,8 +128,8 @@ class Partie:
         
         self.chien = carteDistri
         
-        for i in range(self.nbJoueur):
-            self.joueur[i].send_message(str(self.joueurCarte[str(self.joueur[i].username)]))
+        #for i in range(self.nbJoueur):
+        #    self.joueur[i].send_message(str(self.joueurCarte[str(self.joueur[i].username)]))
         
         for i in range(self.nbJoueur):
             self.joueur[i].send_data("carteDist",str(self.joueurCarte[str(self.joueur[i].username)]))
@@ -113,14 +157,13 @@ class Partie:
             if choix == "1": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Petit !\n")
             if choix == "2": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde !\n")
             if choix == "3": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde Sans \n!")
-            if choix == "0": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde Contre !\n")
+            if choix == "4": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde Contre !\n")
             time.sleep(0.5)
-        
+            
         if all(x == "0" for x in temp):
             self.broadcast_player(f"Tout le monde passe on recomence !")
-            print("aa")
-        else:
-            print("bb")
+        
+        else: 
             for i in range(len(temp)):
                 if temp[i]==max(temp):
                     self.broadcast_player(f"Le joueur {self.joueur[i].username} a pris !")
