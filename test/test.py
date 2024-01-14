@@ -1,4 +1,2 @@
-a =["0"]
-
-if all(x == "0" for x in a):
-    print("bonjour")
+for i in range(int((78-6)/3)):
+    print(i)

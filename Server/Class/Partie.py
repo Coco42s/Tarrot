@@ -28,6 +28,8 @@ class Partie:
         self.joueCarte = []
         self.joueurCarte = {}
         
+        self.nbToure = 8
+        
         self.status = False
 
         
@@ -170,8 +172,16 @@ class Partie:
                     self.valeurPris = max(temp)
                     self.joueurPris = self.joueur[i]
                     break
+        
+        for i in range(self.nbJoueur):
+            self.joueur[i].send_message(f"Le chien est : {self.chien}\n")
+        
+        return
                 
-                
+    def jeux(self):
+        for i in range(int((78-self.nbToure)/self.nbJoueur)):
+            pass
+        pass             
                 
                 
         
