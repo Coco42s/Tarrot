@@ -36,12 +36,15 @@ class Partie:
 # Status
 
     def attent(self):
+        tchat_thread = threading.Thread(target=self.tchat_gestion, args=())
+        tchat_thread.start()
+        
         for i in range(self.nbJoueur):
-            self.joueur[i].send_message(f"Vous etes dans une partie a {self.nbJoueur} joueurs !\n Les joueur sont :")
-            for i in range(self.nbJoueur):
-                self.joueur[i].send_message(f"{self.joueur[i].username}")
-            self.joueur[i].send_message("\n\nAppuiller sur pres pour commencer.")
-                
+            self.joueur[i].send_tchat(f"BPB")
+        
+        for i in range(self.nbJoueur):
+            self.joueur[i].send_message(f"Vous etes dans une partie a {self.nbJoueur} joueurs !\n"))
+                          
     def rl(self, st = True):
         if st:
             self.__init__()
@@ -68,6 +71,9 @@ class Partie:
             self.run()
         
     def run(self):
+        
+        self.attent()
+        
         self.paquet_carte()
         
         if self.nbJoueur == 5:
@@ -86,18 +92,15 @@ class Partie:
             except:
                 pass
 
-    def broadcast_tchat(self, message):
-        for client in self.joueur:
-            try:
-                client.send_tchat(message)
-            except:
-                print("Brod error")
-
     def tchat(self, client:Client):
         while True:
             try:
                 message = client.receive_message_tchat()
-                self.broadcast_tchat(f"{client.username} : {message}")   
+                for client in self.joueur:
+                    try:
+                        client.send_tchat(message)
+                    except:
+                        print("Brod error") 
             except:
                 print("Tchat error")
 
@@ -105,6 +108,36 @@ class Partie:
         for i in range(self.nbJoueur):
             client_tchat_thread = threading.Thread(target=self.tchat, args=(self.joueur[i],))
             client_tchat_thread.start()
+
+    def tchat_gestion(self):
+        # Configuration du serveur tchat
+        host = "127.0.0.1"
+        port = 5567
+
+        # Création du socket
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.bind((host, port))
+        server_socket.listen(5)
+
+        print(f"Serveur tchat en attente de connexions sur {host}:{port}")
+        
+        clients_t = []
+        while len(clients_t) != self.nbJoueur:
+            client_socket, client_address = server_socket.accept()
+            print(f"Nouvelle connexion de {client_address}")
+
+            # Création d'une instance Client pour gérer le client
+            client = Client(client_socket, client_address)
+            
+            clients_t.append(client)
+        
+        for i in range(self.nbJoueur):
+            client_tchat_thread = threading.Thread(target=self.tchat, args=(clients_t[i],))
+            client_tchat_thread.start()
+        
+        
+        pass
+
             
         
 # Jeux
@@ -136,7 +169,7 @@ class Partie:
         for i in range(self.nbJoueur):
             self.joueur[i].send_data("carteDist",str(self.joueurCarte[str(self.joueur[i].username)]))
         
-        time.sleep(5)
+        time.sleep(0.5)
         
         for i in range(self.nbJoueur):
             self.joueur[i].bloced_carte()
@@ -180,7 +213,7 @@ class Partie:
                 
     def chien__creation(self):
         for i in range(self.nbJoueur):
-            self.joueur[i].send_message(f"Le chien est : {self.chien}\n")
+            self.joueur[i].send_message(f"Le chien est : {self.chien}\n") 
             
         for i in range(self.nbJoueur):
             self.joueur[i].send_message(f"On attent que le preneur fasse sont chien dans le chanel serveur !\n")   
@@ -189,8 +222,8 @@ class Partie:
         
         
         
-        crt_temp = []
-        
+        #crt_temp = []
+        #
         #for i in range(self.nbChien):
         #    ta = True
         #    while ta:
@@ -200,14 +233,7 @@ class Partie:
         #        else:
         #            pass
         #
-        
-        
-        
-        
-        
         return
-    
-    
     
     def jeux(self):
         for i in range(int((78-self.nbToure)/self.nbJoueur)):

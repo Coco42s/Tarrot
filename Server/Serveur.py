@@ -91,9 +91,25 @@ def verifPartie():
             pass
             
         if len(partie4) == 4:
-            pass
+            if len(partie3) == 4:
+                if ptt3.status == False:
+                    ptt3.status = True
+                    ptt3.nbJoueur = 4
+                    ptt3.joueur = [partie4[0],partie4[1],partie4[2],partie4[3]]
+                    partie3 = partie3[4:]
+                    #ptt3.tchatStart()
+                    ptt3.run()
+                pass
         if len(partie4) == 5:
-            pass
+            if len(partie3) == 5:
+                if ptt3.status == False:
+                    ptt3.status = True
+                    ptt3.nbJoueur = 5
+                    ptt3.joueur = [partie5[0],partie5[1],partie5[2],partie5[3],partie5[4]]
+                    partie3 = partie3[5:]
+                    #ptt3.tchatStart()
+                    ptt3.run()
+                pass
         
         time.sleep(1)
 

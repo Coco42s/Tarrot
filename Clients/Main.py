@@ -44,6 +44,7 @@ def receive_messages(socket):
     while True:
         try:
             data = socket.recv(1024)
+            print(data)
             message = pickle.loads(data)
             try:
                 if message['afficher'] == True:
@@ -51,7 +52,6 @@ def receive_messages(socket):
                     textbox_jeu.insert(END, f"{message['affich']}\n")
                     textbox_jeu.configure(state="disable")
                     textbox_jeu.see(END)
-                    print(message['affich'])
             except:
                 try:
                     if message['serv']:
@@ -59,14 +59,19 @@ def receive_messages(socket):
                         textbox_serv.insert(END, f"{message['serv']}\n")
                         textbox_serv.configure(state="disable")
                         textbox_serv.see(END)
-                        print(message['serv'])
                 except:
                     try:
                         if message['tchat']:
-                            textbox_tchat.configure(state="normal")
-                            textbox_tchat.insert(END, f"{message['tchat']}\n")
-                            textbox_tchat.configure(state="disable")
-                            textbox_tchat.see(END)
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            pass
+                        
                     except:
                         try:
                             if message['data']:
