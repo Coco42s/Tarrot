@@ -5,8 +5,12 @@ from random import *
 
 
 class Partie:
+    """Permet de géré un partie
+    """
     
     def __init__(self):
+        """init class
+        """
         self.nbJoueur = 0
         self.joueur = []
         
@@ -36,6 +40,8 @@ class Partie:
 # Status
 
     def attent(self):
+        """Attent tout les joueur et annonce certaine chose, (nes pas utiliser)
+        """
         tchat_thread = threading.Thread(target=self.tchat_gestion, args=())
         tchat_thread.start()
         
@@ -43,9 +49,14 @@ class Partie:
             self.joueur[i].send_tchat(f"BPB")
         
         for i in range(self.nbJoueur):
-            self.joueur[i].send_message(f"Vous etes dans une partie a {self.nbJoueur} joueurs !\n"))
+            self.joueur[i].send_message(f"Vous etes dans une partie a {self.nbJoueur} joueurs !\n")
                           
     def rl(self, st = True):
+        """Un relise non fonctionel
+
+        Args:
+            st (bool, optional): por savoir le type de rel. Defaults to True.
+        """
         if st:
             self.__init__()
         else:
@@ -71,8 +82,9 @@ class Partie:
             self.run()
         
     def run(self):
-        
-        self.attent()
+        """Run  la game
+        """
+        #self.attent()
         
         self.paquet_carte()
         
@@ -86,6 +98,11 @@ class Partie:
 # Comm
         
     def broadcast_player(self, message):
+        """Envoi a tout les joueur
+
+        Args:
+            message (str): message
+        """
         for client in self.joueur:
             try:
                 client.send_message(message)
@@ -93,6 +110,11 @@ class Partie:
                 pass
 
     def tchat(self, client:Client):
+        """non utiliser
+
+        Args:
+            client (Client): socket client
+        """
         while True:
             try:
                 message = client.receive_message_tchat()
@@ -105,11 +127,15 @@ class Partie:
                 print("Tchat error")
 
     def tchatStart(self):
+        """start le tchat, (non utiliser)
+        """
         for i in range(self.nbJoueur):
             client_tchat_thread = threading.Thread(target=self.tchat, args=(self.joueur[i],))
             client_tchat_thread.start()
 
     def tchat_gestion(self):
+        """non utiliser, gestion du tchat
+        """
         # Configuration du serveur tchat
         host = "127.0.0.1"
         port = 5567
@@ -143,12 +169,19 @@ class Partie:
 # Jeux
    
     def paquet_carte(self):
+        """créé le packet de carte et le mélenge
+        """
         pac = Paquet()
         pac.fabriques() 
         self.carte = pac.get_jeu()
         shuffle(self.carte)
     
     def distribut(self, ch):
+        """Distribut les carte
+
+        Args:
+            ch (int): nombre de carte au chien
+        """
         carteDistri = self.carte
         
         for i in range(self.nbJoueur):
@@ -175,6 +208,8 @@ class Partie:
             self.joueur[i].bloced_carte()
 
     def prend(self):
+        """Savoir qui prent
+        """
         temp = []
         for i in range(self.nbJoueur):
             self.joueur[i].send_message("\n0 : Passe\n1 : Petit\n2 : Garde\n3 : Garde Sans\n4 : Garde Contre\n\nVeuiller écrire votre choix dans le chanel serveur\n")
@@ -212,6 +247,8 @@ class Partie:
         return
                 
     def chien__creation(self):
+        """permet de créé son chien
+        """
         for i in range(self.nbJoueur):
             self.joueur[i].send_message(f"Le chien est : {self.chien}\n") 
             
@@ -236,6 +273,8 @@ class Partie:
         return
     
     def jeux(self):
+        """boucle du jeux
+        """
         for i in range(int((78-self.nbToure)/self.nbJoueur)):
             pass
         pass             

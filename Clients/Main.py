@@ -18,6 +18,8 @@ import pickle
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def connection():
+    """Cette fonction permet au clien de se connecter au serveur.
+    """
     print("Connecting")
     PorT = sidebar_entry_port.get()
     try:
@@ -41,6 +43,11 @@ def connection():
         print("connection serveur failed")
 
 def receive_messages(socket):
+    """permet de trier les message resu
+
+    Args:
+        socket (_socket_): soket de connection
+    """
     while True:
         try:
             data = socket.recv(1024)
@@ -84,18 +91,33 @@ def receive_messages(socket):
 
 
 def send_entry_serv(event):
+    """envoit au serveur une doné de type serv
+
+    Args:
+        event (_event_): un event
+    """
     data = entry_serv.get()
     msg = pickle.dumps({'serv':data})
     socket.sendall(msg)
     entry_serv.delete(0, 'end')
 
 def send_entry_tchat(event):
+    """envoit au serveur une doné de type tchat
+
+    Args:
+        event (_event_): un event
+    """
     data = str(entry_tchat.get())
     msg = pickle.dumps({'tchat':data})
     socket.sendall(msg)
     entry_tchat.delete(0, 'end')
 
 def send_data_serv(data):
+    """envoit un donné au serveur avec le type data
+
+    Args:
+        data (_str_): donner au forma str
+    """
     try:
         msg = pickle.dumps({'data':data})
         socket.sendall(msg)
@@ -106,6 +128,12 @@ def send_data_serv(data):
 
 # DATA
 def exploit_data(obj, data):
+    """permet de géré les donner de type data
+
+    Args:
+        obj (_str_): obj sais a dire le type d'info
+        data (_str_): la donné au forma str
+    """
     global a,b,statCarte
     if obj == "carteDist":
         del_carte()
@@ -135,6 +163,11 @@ def exploit_data(obj, data):
 #jestion bouton
         
 def on_button_click_carte(button_text):
+    """Gère lenvoi d'information quand on clic sur une carte
+
+    Args:
+        button_text (_str_): text du bouton
+    """
     if statCarte:
         for i in range(len(a)):
             if str(a[i]) == button_text:
@@ -148,6 +181,11 @@ def on_button_click_carte(button_text):
 
 
 def on_button_click(button_text):
+    """Gère l'information quan un clic sur un bouton (pas utiliser)
+    
+    Args:
+        button_text (_str_): text du bouton
+    """
     print(carte.winfo_height())
     print(carte.winfo_width())
     """data = str(button_text)
@@ -157,6 +195,8 @@ def on_button_click(button_text):
 #Widgets
 
 def side_bar():
+    """Génaire la side bar
+    """
     global sidebar_entry_address,sidebar_entry_port,sidebar_entry_username,sidebar_button_Valider
     
     sidebar_frame = CTkFrame(fenetre, width=140, corner_radius=0)
@@ -196,6 +236,15 @@ def side_bar():
     return
 
 def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a12","a13","a14","a15","a16","a17","a18","a19","a20","a21","a22","a23","a24"],act=False):
+    """Sert a créé les bouton et afficher les carte
+
+    Args:
+        list (list, optional): liste des carte. Defaults to ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a12","a13","a14","a15","a16","a17","a18","a19","a20","a21","a22","a23","a24"].
+        act (bool, optional): si on utilise la liste ou pas. Defaults to False. 
+
+    Returns:
+        a,b: des list qui ser a avoir les ref des bouton
+    """
     global b
     a,b=[],[]
     cmpt = 1 
@@ -230,10 +279,9 @@ def carte_wid(list= ["a1","a2","a3","a4","a5","a6","a7","a8","a9","a10","a11","a
         cmpt += 1
     return a,b
 
-def dapa():
-    print("CC")
-
 def del_carte():
+    """Détruit les carte
+    """
     global b
     for i in b:
         i.destroy()
@@ -241,15 +289,27 @@ def del_carte():
 
 
 def change_appearance_mode_event(new_appearance_mode: str):
+    """change l'apparance
+
+    Args:
+        new_appearance_mode (str): name of aparence
+    """
     set_appearance_mode(new_appearance_mode)
 
 def change_scaling_event(new_scaling: str):
-        new_scaling_float = int(new_scaling.replace("%", "")) / 100
-        set_widget_scaling(new_scaling_float)
+    """Defini la taile de l'interface
+
+    Args:
+        new_scaling (str): valeur du scale
+    """
+    new_scaling_float = int(new_scaling.replace("%", "")) / 100
+    set_widget_scaling(new_scaling_float)
 
 #Initialisation
 
 def initialize():
+    """initialise la fenetre
+    """
     global script_dir
     
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -265,6 +325,7 @@ set_appearance_mode("dark")
 fenetre = CTk()
 fenetre.geometry("1280x720")
 fenetre.title("Tarrot")
+fenetre.resizable(width=False, height=False)
 
 #menubar()
 initialize()

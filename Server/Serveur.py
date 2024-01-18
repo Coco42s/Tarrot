@@ -9,15 +9,12 @@ from Class.Partie import Partie
 
 #---Send Message
 
-def tchat_msg_send(message, lst):
-    for client in lst:
-        try:
-            client.send_tchat(message)
-        except:
-            # En cas d'erreur, le client peut être retiré de la liste
-            clients.remove(client)
-
 def broadcast_message(message):
+    """envoi un message a tout les client
+
+    Args:
+        message (_str_): message
+    """
     for client in clients:
         try:
             client.send_message(message)
@@ -29,6 +26,8 @@ def broadcast_message(message):
 #---Acpet conection
             
 def accept_connections():
+    """Permai d'accépter les conection et géré ou elle vont
+    """
     while True:
         client_socket, client_address = server_socket.accept()
         print(f"Nouvelle connexion de {client_address}")
@@ -78,6 +77,8 @@ def accept_connections():
 #---Partie Vérif
 
 def verifPartie():
+    """Vérifit les partie pou les remplire
+    """
     global partie3
     while True:
         if len(partie3) == 3:
@@ -112,66 +113,6 @@ def verifPartie():
                 pass
         
         time.sleep(1)
-
-
-#---Partie 3
-
-def tchat_p3(client:Client):
-    while True:
-        try:
-            message = client.receive_message_tchat()
-            
-            tchat_msg_send(f"{client.username} : {message}", partie3)
-                 
-        except Exception as e:
-            print(f"Erreur de traitement pour {client.address}: {str(e)}")
-            break
-    # Si le client se déconnecte, le retirer de la liste
-    clients.remove(client)
-    broadcast_message(f"{client.username} s'est déconnecté.")
-    #client.socket.close()
-
-
-
-#---Partie 4
-
-def tchat_p4(client:Client):
-    while True:
-        try:
-            message = client.receive_message_tchat()
-            
-            tchat_msg_send(f"{client.username} : {message}", partie4)
-                 
-        except Exception as e:
-            print(f"Erreur de traitement pour {client.address}: {str(e)}")
-            break
-    # Si le client se déconnecte, le retirer de la liste
-    clients.remove(client)
-    broadcast_message(f"{client.username} s'est déconnecté.")
-    #client.socket.close()
-
-
-
-#---Partie 5
-
-def tchat_p5(client:Client):
-    while True:
-        try:
-            message = client.receive_message_tchat()
-            
-            tchat_msg_send(f"{client.username} : {message}", partie5)
-                 
-        except Exception as e:
-            print(f"Erreur de traitement pour {client.address}: {str(e)}")
-            break
-    # Si le client se déconnecte, le retirer de la liste
-    clients.remove(client)
-    broadcast_message(f"{client.username} s'est déconnecté.")
-    #client.socket.close()
-
-
-
-
 
 #---Main
 
