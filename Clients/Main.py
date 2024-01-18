@@ -51,6 +51,7 @@ def receive_messages(socket):
                     textbox_jeu.insert(END, f"{message['affich']}\n")
                     textbox_jeu.configure(state="disable")
                     textbox_jeu.see(END)
+                    print(message['affich'])
             except:
                 try:
                     if message['serv']:
@@ -58,6 +59,7 @@ def receive_messages(socket):
                         textbox_serv.insert(END, f"{message['serv']}\n")
                         textbox_serv.configure(state="disable")
                         textbox_serv.see(END)
+                        print(message['serv'])
                 except:
                     try:
                         if message['tchat']:
@@ -70,7 +72,7 @@ def receive_messages(socket):
                             if message['data']:
                                 exploit_data(message['obj'], message['data'])
                         except:
-                            pass
+                            print("error")
         except socket as e:
             print(f"Erreur lors de la réception du message: {str(e)}")
 
@@ -85,7 +87,6 @@ def send_entry_serv(event):
 def send_entry_tchat(event):
     data = str(entry_tchat.get())
     msg = pickle.dumps({'tchat':data})
-    socket.sendall(msg)
     socket.sendall(msg)
     entry_tchat.delete(0, 'end')
 

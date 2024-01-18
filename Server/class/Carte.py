@@ -43,7 +43,7 @@ class Carte:
         if self.__couleur == "Atout":
             return f"{self.__couleur} {self.__valeur}"
         if self.__couleur == "Excuse":
-            return f"{self.__couleur}"
+            return f"{self.__couleur} {self.__valeur}"
         if self.__valeur <= 10 and self.__couleur != "Atout" and self.__couleur != "Excuse":
             return f"{self.__couleur} {self.__valeur}"
         if self.__valeur >= 10 and self.__couleur != "Atout" and self.__couleur != "Excuse":

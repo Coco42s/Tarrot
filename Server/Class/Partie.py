@@ -123,15 +123,15 @@ class Partie:
         
         for i in range(1,int(((78-ch)/3)/3+1)):
             for i in range(self.nbJoueur):
-                self.joueurCarte[str(self.joueur[i].username)].append(carteDistri[i])
-                self.joueurCarte[str(self.joueur[i].username)].append(carteDistri[i+1])
-                self.joueurCarte[str(self.joueur[i].username)].append(carteDistri[i+2])
+                self.joueurCarte[str(self.joueur[i].username)].append(carteDistri[0])
+                self.joueurCarte[str(self.joueur[i].username)].append(carteDistri[1])
+                self.joueurCarte[str(self.joueur[i].username)].append(carteDistri[2])
                 carteDistri = carteDistri[3:]
         
         self.chien = carteDistri
         
-        #for i in range(self.nbJoueur):
-        #    self.joueur[i].send_message(str(self.joueurCarte[str(self.joueur[i].username)]))
+        for i in range(self.nbJoueur):
+            self.joueur[i].send_message(str(self.joueurCarte[str(self.joueur[i].username)]))
         
         for i in range(self.nbJoueur):
             self.joueur[i].send_data("carteDist",str(self.joueurCarte[str(self.joueur[i].username)]))
@@ -145,9 +145,11 @@ class Partie:
         temp = []
         for i in range(self.nbJoueur):
             self.joueur[i].send_message("\n0 : Passe\n1 : Petit\n2 : Garde\n3 : Garde Sans\n4 : Garde Contre\n\nVeuiller écrire votre choix dans le chanel serveur\n")
+        for i in range(self.nbJoueur):
             ta = True
             while ta:
                 print("85")
+                self.broadcast_player(f"A {self.joueur[i].username} de choisire.")
                 choix = self.joueur[i].receive_message_serv()
                 if choix != "0" and choix != "1" and choix != "2" and choix != "3" and choix != "4":
                     self.joueur[i].send_server("Veuiller choisir un chifre entre 0 et 4 !\n")
@@ -163,21 +165,50 @@ class Partie:
             time.sleep(0.5)
             
         if all(x == "0" for x in temp):
-            self.broadcast_player(f"Tout le monde passe on recomence !")
+            self.broadcast_player(f"Tout le monde passe on recomence !\n")
         
         else: 
             for i in range(len(temp)):
                 if temp[i]==max(temp):
-                    self.broadcast_player(f"Le joueur {self.joueur[i].username} a pris !")
+                    self.broadcast_player(f"Le joueur {self.joueur[i].username} a pris !\n")
                     self.valeurPris = max(temp)
-                    self.joueurPris = self.joueur[i]
+                    self.joueurPris = i
                     break
-        
-        for i in range(self.nbJoueur):
-            self.joueur[i].send_message(f"Le chien est : {self.chien}\n")
-        
+                
+        self.chien__creation()
         return
                 
+    def chien__creation(self):
+        for i in range(self.nbJoueur):
+            self.joueur[i].send_message(f"Le chien est : {self.chien}\n")
+            
+        for i in range(self.nbJoueur):
+            self.joueur[i].send_message(f"On attent que le preneur fasse sont chien dans le chanel serveur !\n")   
+        
+        self.joueur[int(self.joueurPris)].send_server(f"Veuiler rentré les carte choisie pour le chien une a une sour le forma 'couleur + valeur' Exemple : 'Excuse 42'\n(ne pas mètre les '')\nLes couleur possible sont (Pique,Trèfle,Coeur,Carreau,Atout,Excuse)\n Les valeur vont de 1 a 14 pour les carte ordinaire pour les atout sa vas de 1 a 21 et l'excuse sais 42")
+        
+        
+        
+        crt_temp = []
+        
+        #for i in range(self.nbChien):
+        #    ta = True
+        #    while ta:
+        #        choix = self.joueur[int(self.joueurPris)].receive_message_serv()
+        #        if "Pique" in choix or "Trèfle" in choix or "Coeur" in choix or "Carreau" in choix or "Atout" in choix or "Excuse" in choix:
+        #            pass
+        #        else:
+        #            pass
+        #
+        
+        
+        
+        
+        
+        return
+    
+    
+    
     def jeux(self):
         for i in range(int((78-self.nbToure)/self.nbJoueur)):
             pass
