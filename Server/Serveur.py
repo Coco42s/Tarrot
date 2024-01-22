@@ -58,14 +58,14 @@ def accept_connections():
             if choix == '4':
                 partie4.append(client)
                 client.send_server(f"\nVous avez été mis en attent dans une partie a 4 joueur !\n\nLe tchat d'attante des partie a quatre joueur est disponible !\n")
-                client_tchat_thread = threading.Thread(target=tchat_p4, args=(client,))
-                client_tchat_thread.start()
+                #client_tchat_thread = threading.Thread(target=tchat_p4, args=(client,))
+                #client_tchat_thread.start()
                 at = False
             if choix == '5':
                 partie5.append(client)
                 client.send_server(f"\nVous avez été mis en attent dans une partie a 5 joueur !\n\nLe tchat d'attante des partie a cinq joueur est disponible !\n")
-                client_tchat_thread = threading.Thread(target=tchat_p5, args=(client,))
-                client_tchat_thread.start()
+                #client_tchat_thread = threading.Thread(target=tchat_p5, args=(client,))
+                #client_tchat_thread.start()
                 at = False
             if choix != '3' and choix != '4' and choix != '5':
                 client.send_server(f"Vous devez choisire 3, 4 ou 5 ?\n")
