@@ -1,3 +1,4 @@
+import re
 from os import abort
 from Class.Client import *
 from Class.Paquet  import * 
@@ -202,7 +203,7 @@ class Partie:
         for i in range(self.nbJoueur):
             self.joueur[i].send_data("carteDist",str(self.joueurCarte[str(self.joueur[i].username)]))
         
-        time.sleep(0.5)
+        time.sleep(5)
         
         for i in range(self.nbJoueur):
             self.joueur[i].bloced_carte()
@@ -252,24 +253,43 @@ class Partie:
         for i in range(self.nbJoueur):
             self.joueur[i].send_message(f"Le chien est : {self.chien}\n") 
             
+        time.sleep(5)
+            
         for i in range(self.nbJoueur):
             self.joueur[i].send_message(f"On attent que le preneur fasse sont chien dans le chanel serveur !\n")   
         
-        self.joueur[int(self.joueurPris)].send_server(f"Veuiler rentré les carte choisie pour le chien une a une sour le forma 'couleur + valeur' Exemple : 'Excuse 42'\n(ne pas mètre les '')\nLes couleur possible sont (Pique,Trèfle,Coeur,Carreau,Atout,Excuse)\n Les valeur vont de 1 a 14 pour les carte ordinaire pour les atout sa vas de 1 a 21 et l'excuse sais 42")
+        self.joueur[int(self.joueurPris)].send_server(f"Veuiler rentré les carte choisie pour le chien une a une sour le forma 'couleur + valeur' Exemple : Excuse 42\n\nLes couleur possible sont (Pique,Trèfle,Coeur,Carreau,Atout,Excuse)\n Les valeur vont de 1 a 14 pour les carte ordinaire pour les atout sa vas de 1 a 21 et l'excuse sais 42")
         
         
         
-        #crt_temp = []
-        #
-        #for i in range(self.nbChien):
-        #    ta = True
-        #    while ta:
-        #        choix = self.joueur[int(self.joueurPris)].receive_message_serv()
-        #        if "Pique" in choix or "Trèfle" in choix or "Coeur" in choix or "Carreau" in choix or "Atout" in choix or "Excuse" in choix:
-        #            pass
-        #        else:
-        #            pass
-        #
+        carte_chien = []
+        carte_valide = self.joueurCarte[self.joueur[int(self.joueurPris)].username] + self.chien
+        
+        for i in range(self.nbChien):
+            ta = True
+            while ta:
+                choix = self.joueur[int(self.joueurPris)].receive_message_serv()
+                
+                for objet in carte_valide:
+                    if str(objet) == choix:
+                        print(choix)
+                        break
+                else:
+                    print("Aucune correspondance trouvée.")
+                
+                
+                #if re.match(r"^(Pique|Trèfle|Coeur|Carreau|Excuse|Atout)\s(42|2[0-1]|1[0-9]|[1-9])$", choix):
+                #    if re.match(r"^(Atout)\s(2[]|1[0-9]|[1-9])$", choix):
+                #        pass
+                #    
+                #    if re.match(r"^(Excuse)\s(42)$", choix):
+                #        pass
+                #    
+                #    if re.match(r"^(Pique|Trèfle|Coeur|Carreau)\s(1[0-4]|[1-9])$", choix):
+                #        pass
+                #else:
+                #    self.joueur[int(self.joueurPris)].send_server(f"Erreur de Forma (le forma est 'Atout 10')")
+        
         return
     
     def jeux(self):

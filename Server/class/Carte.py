@@ -37,6 +37,16 @@ class Carte:
                 return 0.5
     
     def __str__(self):
+        if self.__couleur == "Atout":
+            return f"{self.__couleur} {self.__valeur}"
+        if self.__couleur == "Excuse":
+            return f"{self.__couleur} {self.__valeur}"
+        if self.__valeur <= 10 and self.__couleur != "Atout" and self.__couleur != "Excuse":
+            return f"{self.__couleur} {self.__valeur}"
+        if self.__valeur >= 10 and self.__couleur != "Atout" and self.__couleur != "Excuse":
+            for i in self.__honneurs:
+                if i != 1:
+                    return f"{self.__couleur} {self.__valeur}"
         return "0"
     
     def __repr__(self):
