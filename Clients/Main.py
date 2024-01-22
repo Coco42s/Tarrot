@@ -32,6 +32,9 @@ def connection():
         socket.connect((host, port))
         receive_thread = threading.Thread(target=receive_messages, args=(socket,))
         receive_thread.start()
+        receive_thread = threading.Thread(target=trate_messages, args=(socket,))
+        receive_thread.start()
+        
         print("Connect")
 
         data = f"{sidebar_entry_username.get()}"
@@ -42,17 +45,30 @@ def connection():
     except:
         print("connection serveur failed")
 
+
 def receive_messages(socket):
+    global resv_serv
+    while True:
+        try:
+            data = socket.recv(1024)
+            resv_serv.append(data) 
+            print(pickle.loads(data))
+        except:
+            print("ERROR")
+
+def trate_messages(socket):
     """permet de trier les message resu
 
     Args:
         socket (_socket_): soket de connection
     """
+    global resv_serv
     while True:
         try:
-            data = socket.recv(1024)
-            print(data)
+            data = resv_serv[0]
             message = pickle.loads(data)
+            #print(message)
+            resv_serv = resv_serv[1:]
             try:
                 if message['afficher'] == True:
                     textbox_jeu.configure(state="normal")
@@ -69,24 +85,18 @@ def receive_messages(socket):
                 except:
                     try:
                         if message['tchat']:
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
                             pass
-                        
                     except:
                         try:
                             if message['data']:
+                                print(message['obj'])
                                 exploit_data(message['obj'], message['data'])
+                                while status_data_exploite:
+                                    time.sleep(0.2)
                         except:
                             print("error")
-        except socket as e:
-            print(f"Erreur lors de la réception du message: {str(e)}")
+        except:
+            time.sleep(0.5)
 
 
 
@@ -134,8 +144,10 @@ def exploit_data(obj, data):
         obj (_str_): obj sais a dire le type d'info
         data (_str_): la donné au forma str
     """
-    global a,b,statCarte
+    global a,b,statCarte,status_data_exploite
+    status_data_exploite = True
     if obj == "carteDist":
+        print("a")
         del_carte()
         str_variable = data
         str_variable_fixed = str_variable.replace(", ", ",").replace(",", "','").replace("[", "['").replace("]", "']")
@@ -157,7 +169,7 @@ def exploit_data(obj, data):
         time.sleep(0.5)
         a,b=carte_wid()
     
-    
+    status_data_exploite = False
     pass
 
 #jestion bouton
@@ -320,13 +332,13 @@ def initialize():
 
 
 #-----------Main-----------#
-global fenetre
+global fenetre, resv_serv
 set_appearance_mode("dark")
 fenetre = CTk()
 fenetre.geometry("1280x720")
 fenetre.title("Tarrot")
 fenetre.resizable(width=False, height=False)
-
+resv_serv = []
 #menubar()
 initialize()
 
@@ -349,7 +361,7 @@ tabview.grid(row=0, column=12, padx=(20, 20), pady=(20, 0), sticky="nsew")
 tabview.add("Tchat")
 tabview.add("Serveur")
 
-textbox_serv = CTkTextbox(tabview.tab("Serveur"), height=130, wrap='word', activate_scrollbars=False, state="disable")
+textbox_serv = CTkTextbox(tabview.tab("Serveur"), height=130, wrap='word', activate_scrollbars=False, state="disable", autoseparators=True)
 textbox_serv.grid(row=0, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")
 entry_serv = CTkEntry(tabview.tab("Serveur"))
 entry_serv.grid(row=2, column=0, padx=(20, 20), pady=(0, 20), sticky="nsew")

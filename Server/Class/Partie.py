@@ -231,7 +231,7 @@ class Partie:
             if choix == "2": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde !\n")
             if choix == "3": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde Sans \n!")
             if choix == "4": self.broadcast_player(f"Le joueur {self.joueur[i].username} a choisi une Garde Contre !\n")
-            time.sleep(0.5)
+            #time.sleep(0.5)
             
         if all(x == "0" for x in temp):
             self.broadcast_player(f"Tout le monde passe on recomence !\n")
@@ -253,12 +253,12 @@ class Partie:
         for i in range(self.nbJoueur):
             self.joueur[i].send_message(f"Le chien est : {self.chien}\n") 
             
-        time.sleep(5)
+        #time.sleep(5)
             
         for i in range(self.nbJoueur):
             self.joueur[i].send_message(f"On attent que le preneur fasse sont chien dans le chanel serveur !\n")   
         
-        self.joueur[int(self.joueurPris)].send_server(f"Veuiler rentré les carte choisie pour le chien une a une sour le forma 'couleur + valeur' Exemple : Excuse 42\n\nLes couleur possible sont (Pique,Trèfle,Coeur,Carreau,Atout,Excuse)\n Les valeur vont de 1 a 14 pour les carte ordinaire pour les atout sa vas de 1 a 21 et l'excuse sais 42")
+        self.joueur[int(self.joueurPris)].send_server(f"Veuiler rentré les carte choisie pour le chien une a une sour le forma 'couleur + valeur'\nExemple : 'Excuse 42'\n\nLes couleur possible sont (Pique, Trèfle, Coeur, Carreau, Atout, Excuse)\nLes valeur vont de 1 a 14 pour les carte ordinaire pour les atout sa vas de 1 a 21 et l'excuse sais 42")
         
         
         
@@ -272,8 +272,9 @@ class Partie:
                 
                 for objet in carte_valide:
                     if str(objet) == choix:
-                        print(choix)
-                        break
+                        carte_chien.append(choix)
+                        self.joueur[int(self.joueurPris)].send_server()
+                        
                 else:
                     print("Aucune correspondance trouvée.")
                 
