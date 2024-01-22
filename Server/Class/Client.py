@@ -40,6 +40,7 @@ class Client:
         """
         try:
             msg = pickle.dumps({'obj':obj, 'data': data})
+            self.socket.sendall(msg)
             print({'obj':obj, 'data': data})
         except socket.error as e:
             print(f"Erreur lors de l'envoi du message à {self.address}: {str(e)}")

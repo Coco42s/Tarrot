@@ -1,4 +1,8 @@
+a = {'aa':1212}
 
-for i in range(3):
-    for e in range(3):
-        print(i,e)
+print(a)
+
+a["aa"] = 5454
+
+print(a)
+

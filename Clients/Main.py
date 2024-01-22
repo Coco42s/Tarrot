@@ -51,8 +51,7 @@ def receive_messages(socket):
     while True:
         try:
             data = socket.recv(1024)
-            resv_serv.append(data) 
-            print(pickle.loads(data))
+            resv_serv.append(data)
         except:
             print("ERROR")
 
@@ -67,7 +66,6 @@ def trate_messages(socket):
         try:
             data = resv_serv[0]
             message = pickle.loads(data)
-            #print(message)
             resv_serv = resv_serv[1:]
             try:
                 if message['afficher'] == True:
@@ -96,7 +94,7 @@ def trate_messages(socket):
                         except:
                             print("error")
         except:
-            time.sleep(0.5)
+            time.sleep(0.1)
 
 
 

@@ -9,10 +9,10 @@ class Partie:
     """Permet de géré un partie
     """
     
-    def __init__(self):
+    def __init__(self,nb_joueur:int):
         """init class
         """
-        self.nbJoueur = 0
+        self.nbJoueur = nb_joueur
         self.joueur = []
         
         self.valeurPris = 0
@@ -25,7 +25,12 @@ class Partie:
         self.carteAutre = []
         
         self.apelRoix = ""
-        self.nbChien = 6
+        
+        if nb_joueur == 5:
+            self.nbChien = 6
+        else:
+            self.nbChien = 3
+            
         
         self.carte = []
         self.chien = []
@@ -33,7 +38,7 @@ class Partie:
         self.joueCarte = []
         self.joueurCarte = {}
         
-        self.nbToure = 8
+        self.nbToure = int(((78-self.nbChien)/3)/self.nbJoueur)
         
         self.status = False
 
@@ -203,7 +208,7 @@ class Partie:
         for i in range(self.nbJoueur):
             self.joueur[i].send_data("carteDist",str(self.joueurCarte[str(self.joueur[i].username)]))
         
-        time.sleep(5)
+        #time.sleep(5)
         
         for i in range(self.nbJoueur):
             self.joueur[i].bloced_carte()
@@ -264,20 +269,41 @@ class Partie:
         
         carte_chien = []
         carte_valide = self.joueurCarte[self.joueur[int(self.joueurPris)].username] + self.chien
-        
+        r_in_c = False
         for i in range(self.nbChien):
             ta = True
             while ta:
                 choix = self.joueur[int(self.joueurPris)].receive_message_serv()
-                
-                for objet in carte_valide:
-                    if str(objet) == choix:
-                        carte_chien.append(choix)
-                        self.joueur[int(self.joueurPris)].send_server()
-                        
+                if not re.match(r"^(Excuse|Atout)\s(42|21|1)$", choix):
+                    for objet in carte_valide:
+                        if str(objet) == choix:
+                            if re.match(r"^(Pique|Trèfle|Coeur|Carreau)\s(14)$", choix):
+                                r_in_c = True
+                            carte_chien.append(choix)
+                            self.joueur[int(self.joueurPris)].send_server(carte_chien)
+                            ta = False
+                        else:
+                            self.joueur[int(self.joueurPris)].send_server("Error")
                 else:
-                    print("Aucune correspondance trouvée.")
-                
+                    self.joueur[int(self.joueurPris)].send_server("Error Vous pouver pas utiliser cette carte !")
+        
+        self.joueur[int(self.joueurPris)].send_server(f"Ton chien est : {carte_chien}")
+        
+        for i in carte_chien:
+            carte_valide.revove(i)
+        
+        self.joueurCarte[self.joueur[int(self.joueurPris)].username] = carte_valide
+        
+        self.joueur[int(self.joueurPris)].send_data("carteDist",str(self.joueurCarte[self.joueur[int(self.joueurPris)].username]))
+        
+        
+        for i in range(self.nbJoueur):
+            self.joueur[i].send_message(f"Le prenneur a Terminer sont chien !\n")  
+            
+        if r_in_c:
+            for i in range(self.nbJoueur):
+                self.joueur[i].send_message(f"Roix au Chien !!!\n")  
+                   
                 
                 #if re.match(r"^(Pique|Trèfle|Coeur|Carreau|Excuse|Atout)\s(42|2[0-1]|1[0-9]|[1-9])$", choix):
                 #    if re.match(r"^(Atout)\s(2[]|1[0-9]|[1-9])$", choix):
@@ -296,7 +322,7 @@ class Partie:
     def jeux(self):
         """boucle du jeux
         """
-        for i in range(int((78-self.nbToure)/self.nbJoueur)):
+        for i in range(self.nbToure):
             pass
         pass             
                 
