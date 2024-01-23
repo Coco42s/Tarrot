@@ -15,7 +15,7 @@ import pickle
 #--------Fonction--------#
 
 #Serveur
-socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socket_serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tchat_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 def connection():
     """Cette fonction permet au clien de se connecter au serveur.
@@ -29,37 +29,37 @@ def connection():
     host, port = (str(sidebar_entry_address.get()),int_port)
 
     try:
-        socket.connect((host, port))
-        receive_thread = threading.Thread(target=receive_messages, args=(socket,))
+        socket_serv.connect((host, port))
+        receive_thread = threading.Thread(target=receive_messages, args=(socket_serv,))
         receive_thread.start()
-        receive_thread = threading.Thread(target=trate_messages, args=(socket,))
+        receive_thread = threading.Thread(target=trate_messages, args=(socket_serv,))
         receive_thread.start()
         
         print("Connect")
 
         data = f"{sidebar_entry_username.get()}"
         data = data.encode("utf8")
-        socket.sendall(data)
+        socket_serv.sendall(data)
         
         
     except:
         print("connection serveur failed")
 
 
-def receive_messages(socket):
+def receive_messages(socket_serv):
     global resv_serv
     while True:
         try:
-            data = socket.recv(1024)
+            data = socket_serv.recv(1024)
             resv_serv.append(data)
         except:
             print("ERROR")
 
-def trate_messages(socket):
+def trate_messages(socket_serv):
     """permet de trier les message resu
 
     Args:
-        socket (_socket_): soket de connection
+        socket_serv (_socket_): soket de connection
     """
     global resv_serv
     while True:
@@ -109,7 +109,7 @@ def send_entry_serv(event):
     """
     data = entry_serv.get()
     msg = pickle.dumps({'serv':data})
-    socket.sendall(msg)
+    socket_serv.sendall(msg)
     entry_serv.delete(0, 'end')
 
 def send_entry_tchat(event):
@@ -120,7 +120,7 @@ def send_entry_tchat(event):
     """
     data = str(entry_tchat.get())
     msg = pickle.dumps({'tchat':data})
-    socket.sendall(msg)
+    tchat_socket.sendall(msg)
     entry_tchat.delete(0, 'end')
 
 def send_data_serv(data):
@@ -131,7 +131,7 @@ def send_data_serv(data):
     """
     try:
         msg = pickle.dumps({'data':data})
-        socket.sendall(msg)
+        socket_serv.sendall(msg)
     except:
         textbox_jeu.configure(state="normal")
         textbox_jeu.insert(END, f"Votre data est pas parvenu au serveur veuiller réséiller \n")
@@ -171,6 +171,7 @@ def exploit_data(obj, data):
         a,b=carte_wid()
     
     if obj == "tchat_conect":
+        
         host, port = ("127.0.0.1",5567)
 
         try:
@@ -179,7 +180,7 @@ def exploit_data(obj, data):
             
             print("Connect")
 
-            tchat.sendall(data)
+            tchat_socket.sendall(data)
             
         
         except:
@@ -221,7 +222,7 @@ def on_button_click(button_text):
     print(carte.winfo_width())
     """data = str(button_text)
     data = data.encode("utf8")
-    socket.sendall(data)"""
+    socket_serv.sendall(data)"""
 
 #Widgets
 

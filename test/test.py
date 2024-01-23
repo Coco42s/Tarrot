@@ -15,10 +15,10 @@ serveur2_addr = ('localhost', 9000)
 
 # Création du premier socket
 socket1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket1.connect(serveur1_addr)
 
 # Création du deuxième socket
+socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket2.connect(serveur2_addr)
 
 # Démarrer un thread pour gérer chaque socket
