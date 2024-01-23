@@ -17,7 +17,10 @@ import pickle
 #Serveur
 socket_serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tchat_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+
 def connection():
+    global username
     """Cette fonction permet au clien de se connecter au serveur.
     """
     print("Connecting")
@@ -38,6 +41,7 @@ def connection():
         print("Connect")
 
         data = f"{sidebar_entry_username.get()}"
+        username = data
         data = data.encode("utf8")
         socket_serv.sendall(data)
         
@@ -118,7 +122,7 @@ def send_entry_tchat(event):
     Args:
         event (_event_): un event
     """
-    data = str(entry_tchat.get())
+    data = f"{username} : {entry_tchat.get()}"
     msg = pickle.dumps({'tchat':data})
     tchat_socket.sendall(msg)
     entry_tchat.delete(0, 'end')
@@ -148,7 +152,6 @@ def exploit_data(obj, data):
     global a,b,statCarte,status_data_exploite
     status_data_exploite = True
     if obj == "carteDist":
-        print("a")
         del_carte()
         str_variable = data
         str_variable_fixed = str_variable.replace(", ", ",").replace(",", "','").replace("[", "['").replace("]", "']")
@@ -158,8 +161,6 @@ def exploit_data(obj, data):
     if obj == "cAct":
         str_variable = data
         data = eval(str_variable)
-        
-        print(type(data))
         if data:
             statCarte = True
         else:
@@ -179,9 +180,11 @@ def exploit_data(obj, data):
             tchat_socket.connect((host, port))
             
             print("Connect")
-
-            tchat_socket.sendall(data)
             
+            receive_thread = threading.Thread(target=tchat_resive, args=(tchat_socket,))
+            receive_thread.start()
+            receive_thread = threading.Thread(target=tchat_trate, args=(tchat_socket,))
+            receive_thread.start()
         
         except:
             print("connection serveur failed")
@@ -190,6 +193,34 @@ def exploit_data(obj, data):
     
     
     status_data_exploite = False
+    pass
+
+# Tchat
+def tchat_resive(tchat_socket):
+    global resv_tchat
+    
+    while True:
+        try:
+            data = tchat_socket.recv(1024)
+            resv_tchat.append(data)
+        except:
+            print("ERROR")
+
+def tchat_trate(tchat_socket):
+    global resv_tchat
+    
+    while True : 
+        try :
+            data = resv_tchat[0]
+            message = pickle.loads(data)
+            resv_tchat = resv_tchat[1:]
+            
+            textbox_tchat.configure(state="normal")
+            textbox_tchat.insert(END, f"{message['tchat']}\n")
+            textbox_tchat.configure(state="disable")
+            textbox_tchat.see(END)
+        except:
+            time.sleep(0.2)
     pass
 
 #jestion bouton
@@ -352,13 +383,14 @@ def initialize():
 
 
 #-----------Main-----------#
-global fenetre, resv_serv
+global fenetre, resv_serv, resv_tchat
 set_appearance_mode("dark")
 fenetre = CTk()
 fenetre.geometry("1280x720")
 fenetre.title("Tarrot")
 fenetre.resizable(width=False, height=False)
 resv_serv = []
+resv_tchat = []
 #menubar()
 initialize()
 

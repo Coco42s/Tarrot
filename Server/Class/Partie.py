@@ -93,6 +93,9 @@ class Partie:
         """Run  la game
         """
         #self.attent()
+        tchat = threading.Thread(target=self.tchat_gestion)
+        tchat.start()
+        
         
         self.paquet_carte()
         
@@ -117,29 +120,11 @@ class Partie:
             except:
                 pass
 
-    def tchat_xxxxxxxxx(self, client:Client):
-        """non utiliser
-
-        Args:
-            client (Client): socket client
-        """
-        while True:
-            try:
-                message = client.receive_message_tchat()
-                for client in self.joueur:
-                    try:
-                        client.send_tchat(message)
-                    except:
-                        print("Brod error") 
-            except:
-                print("Tchat error")
-
     def tchatStart(self):
         """start le tchat, (non utiliser)
         """
-        for i in range(self.nbJoueur):
-            client_tchat_thread = threading.Thread(target=self.tchat, args=(self.joueur[i],))
-            client_tchat_thread.start()
+        client_tchat_thread = threading.Thread(target=self.tchat_gestion)
+        client_tchat_thread.start()
 
     def tchat_gestion(self):
         
@@ -150,20 +135,20 @@ class Partie:
                 client_socket, client_address = server_socket.accept()
                 print(f"Nouvelle connexion de {client_address}")
 
-                client = Client(client_socket, client_address)
+                client = client_socket
                 
                 clients.append(client)
 
                 client_tchat = threading.Thread(target=tchat, args=(client,))
                 client_tchat.start()
         
-        def tchat(client:Client):
+        def tchat(client:socket.socket):
             while True:
                 try:
-                    message = client.receive_message_tchat()
+                    message = client.recv(1024)
                     for client in clients:
                         try:
-                            client.send_tchat(message)
+                            client.sendall(message)
                         except:
                             print("Brod error") 
                 except:
@@ -239,7 +224,6 @@ class Partie:
         for i in range(self.nbJoueur):
             ta = True
             while ta:
-                print("85")
                 self.broadcast_player(f"A {self.joueur[i].username} de choisire.")
                 choix = self.joueur[i].receive_message_serv()
                 if choix != "0" and choix != "1" and choix != "2" and choix != "3" and choix != "4":
@@ -291,7 +275,6 @@ class Partie:
         temp = True
         for i in range(self.nbChien):
             ta = True
-            print("a")
             while ta:
                 choix = self.joueur[int(self.joueurPris)].receive_message_serv()
                 if not re.match(r"^(Excuse|Atout)\s(42|21|1)$", choix):
