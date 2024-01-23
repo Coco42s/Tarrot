@@ -124,7 +124,7 @@ def verifPartie():
 
 if __name__ == "__main__":
     # Configuration du serveur
-    host = "192.168.0.30"
+    host = "127.0.0.1"
     port = 5566
 
     # Création du socket

@@ -1,4 +1,6 @@
 import re
+import socket
+import threading
 from os import abort
 from Class.Client import *
 from Class.Paquet  import * 
@@ -26,7 +28,7 @@ class Partie:
         
         self.apelRoix = ""
         
-        if nb_joueur == 5:
+        if not nb_joueur == 5:
             self.nbChien = 6
         else:
             self.nbChien = 3
@@ -48,14 +50,14 @@ class Partie:
     def attent(self):
         """Attent tout les joueur et annonce certaine chose, (nes pas utiliser)
         """
-        tchat_thread = threading.Thread(target=self.tchat_gestion, args=())
-        tchat_thread.start()
+        
+        joueur_name = f"{str(self.joueur[0].username)}"
+        
+        for i in range(1,self.nbJoueur):
+            joueur_name += f", {str(self.joueur[i].username)}"
         
         for i in range(self.nbJoueur):
-            self.joueur[i].send_tchat(f"BPB")
-        
-        for i in range(self.nbJoueur):
-            self.joueur[i].send_message(f"Vous etes dans une partie a {self.nbJoueur} joueurs !\n")
+            self.joueur[i].send_message(f"Vous etes dans une partie a {self.nbJoueur} joueurs !\nLes joueur sont {joueur_name} ")
                           
     def rl(self, st = True):
         """Un relise non fonctionel
@@ -64,7 +66,7 @@ class Partie:
             st (bool, optional): por savoir le type de rel. Defaults to True.
         """
         if st:
-            self.__init__()
+            self.__init__(self.nbJoueur)
         else:
             
             self.valeurPris = 0
@@ -115,7 +117,7 @@ class Partie:
             except:
                 pass
 
-    def tchat(self, client:Client):
+    def tchat_xxxxxxxxx(self, client:Client):
         """non utiliser
 
         Args:
@@ -140,12 +142,38 @@ class Partie:
             client_tchat_thread.start()
 
     def tchat_gestion(self):
-        """non utiliser, gestion du tchat
-        """
+        
+        
+        
+        def accept_connections():
+            while True:
+                client_socket, client_address = server_socket.accept()
+                print(f"Nouvelle connexion de {client_address}")
+
+                client = Client(client_socket, client_address)
+                
+                clients.append(client)
+
+                client_tchat = threading.Thread(target=tchat, args=(client,))
+                client_tchat.start()
+        
+        def tchat(client:Client):
+            while True:
+                try:
+                    message = client.receive_message_tchat()
+                    for client in clients:
+                        try:
+                            client.send_tchat(message)
+                        except:
+                            print("Brod error") 
+                except:
+                    print("Tchat error")
+        
+        
         # Configuration du serveur tchat
         host = "127.0.0.1"
         port = 5567
-
+        clients = []
         # Création du socket
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.bind((host, port))
@@ -153,22 +181,11 @@ class Partie:
 
         print(f"Serveur tchat en attente de connexions sur {host}:{port}")
         
-        clients_t = []
-        while len(clients_t) != self.nbJoueur:
-            client_socket, client_address = server_socket.accept()
-            print(f"Nouvelle connexion de {client_address}")
-
-            # Création d'une instance Client pour gérer le client
-            client = Client(client_socket, client_address)
-            
-            clients_t.append(client)
+        ac_tread = threading.Thread(target=accept_connections)
+        ac_tread.start()
         
         for i in range(self.nbJoueur):
-            client_tchat_thread = threading.Thread(target=self.tchat, args=(clients_t[i],))
-            client_tchat_thread.start()
-        
-        
-        pass
+            self.joueur[i].send_data("tchat_conect", "bb")
 
             
         
@@ -263,34 +280,42 @@ class Partie:
         for i in range(self.nbJoueur):
             self.joueur[i].send_message(f"On attent que le preneur fasse sont chien dans le chanel serveur !\n")   
         
-        self.joueur[int(self.joueurPris)].send_server(f"Veuiler rentré les carte choisie pour le chien une a une sour le forma 'couleur + valeur'\nExemple : 'Excuse 42'\n\nLes couleur possible sont (Pique, Trèfle, Coeur, Carreau, Atout, Excuse)\nLes valeur vont de 1 a 14 pour les carte ordinaire pour les atout sa vas de 1 a 21 et l'excuse sais 42")
+        self.joueur[int(self.joueurPris)].send_server(f"Veuiler rentré les carte choisie pour le chien une a une sour le forma 'couleur + valeur'\nExemple : 'Excuse 42'\n\nLes couleur possible sont (Pique, Trèfle, Coeur, Carreau, Atout, Excuse)\nLes valeur vont de 1 a 14 pour les carte ordinaire pour les atout sa vas de 1 a 21 et l'excuse sais 42\n")
         
         
         
         carte_chien = []
+        carte_chien_joueur = []
         carte_valide = self.joueurCarte[self.joueur[int(self.joueurPris)].username] + self.chien
         r_in_c = False
+        temp = True
         for i in range(self.nbChien):
             ta = True
+            print("a")
             while ta:
                 choix = self.joueur[int(self.joueurPris)].receive_message_serv()
                 if not re.match(r"^(Excuse|Atout)\s(42|21|1)$", choix):
                     for objet in carte_valide:
                         if str(objet) == choix:
-                            if re.match(r"^(Pique|Trèfle|Coeur|Carreau)\s(14)$", choix):
-                                r_in_c = True
-                            carte_chien.append(choix)
-                            self.joueur[int(self.joueurPris)].send_server(carte_chien)
-                            ta = False
-                        else:
-                            self.joueur[int(self.joueurPris)].send_server("Error")
+                            if not choix in carte_chien_joueur:
+                                temp = False
+                                if re.match(r"^(Pique|Trèfle|Coeur|Carreau)\s(14)$", choix):
+                                    r_in_c = True
+                                carte_chien_joueur.append(choix)
+                                carte_chien.append(objet)
+                                self.joueur[int(self.joueurPris)].send_server(carte_chien_joueur)
+                                ta = False
+                            else:
+                                self.joueur[int(self.joueurPris)].send_server("Error Tu a deja choisi cette carte")
+                    if temp:
+                        self.joueur[int(self.joueurPris)].send_server("Error")
                 else:
                     self.joueur[int(self.joueurPris)].send_server("Error Vous pouver pas utiliser cette carte !")
         
-        self.joueur[int(self.joueurPris)].send_server(f"Ton chien est : {carte_chien}")
+        self.joueur[int(self.joueurPris)].send_server(f"\nTon chien est : {carte_chien_joueur}")
         
         for i in carte_chien:
-            carte_valide.revove(i)
+            carte_valide.remove(i)
         
         self.joueurCarte[self.joueur[int(self.joueurPris)].username] = carte_valide
         
@@ -303,20 +328,8 @@ class Partie:
         if r_in_c:
             for i in range(self.nbJoueur):
                 self.joueur[i].send_message(f"Roix au Chien !!!\n")  
-                   
-                
-                #if re.match(r"^(Pique|Trèfle|Coeur|Carreau|Excuse|Atout)\s(42|2[0-1]|1[0-9]|[1-9])$", choix):
-                #    if re.match(r"^(Atout)\s(2[]|1[0-9]|[1-9])$", choix):
-                #        pass
-                #    
-                #    if re.match(r"^(Excuse)\s(42)$", choix):
-                #        pass
-                #    
-                #    if re.match(r"^(Pique|Trèfle|Coeur|Carreau)\s(1[0-4]|[1-9])$", choix):
-                #        pass
-                #else:
-                #    self.joueur[int(self.joueurPris)].send_server(f"Erreur de Forma (le forma est 'Atout 10')")
         
+        self.jeux()
         return
     
     def jeux(self):

@@ -16,7 +16,7 @@ import pickle
 
 #Serveur
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+tchat_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 def connection():
     """Cette fonction permet au clien de se connecter au serveur.
     """
@@ -83,7 +83,10 @@ def trate_messages(socket):
                 except:
                     try:
                         if message['tchat']:
-                            pass
+                            textbox_tchat.configure(state="normal")
+                            textbox_tchat.insert(END, f"{message['tchat']}\n")
+                            textbox_tchat.configure(state="disable")
+                            textbox_tchat.see(END)
                     except:
                         try:
                             if message['data']:
@@ -166,6 +169,24 @@ def exploit_data(obj, data):
         del_carte()
         time.sleep(0.5)
         a,b=carte_wid()
+    
+    if obj == "tchat_conect":
+        host, port = ("127.0.0.1",5567)
+
+        try:
+            
+            tchat_socket.connect((host, port))
+            
+            print("Connect")
+
+            tchat.sendall(data)
+            
+        
+        except:
+            print("connection serveur failed")
+            pass
+        
+    
     
     status_data_exploite = False
     pass
